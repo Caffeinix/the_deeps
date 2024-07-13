@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BenchNine:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        --body-font-family: "IM Fell English", serif;
+        font-family: var(--body-font-family);
+        --primary-color: var(--paper-blue-600);
+        --surface-color: #f9f7e7;
+        --header-color: rgba(135, 135, 0, 0.2);
+        --header-font-weight: 500;
+      }
+
+      h1,
+      h2 {
+        font-family: "IM Fell English", serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      character-sheet {
+        max-width: 1024px;
+        margin: auto;
+      }
+
+      @media print {
+        nav {
+          display: none;
+        }
+      }
+    </style>
+    <title>SPIRE Character Sheet</title>
+  </head>
+  <body>
+    <character-sheet></character-sheet>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
