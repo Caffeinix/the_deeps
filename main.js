@@ -1,597 +1,9 @@
-"use strict";
-(() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __decorateClass = (decorators, target, key, kind) => {
-    var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-    for (var i4 = decorators.length - 1, decorator; i4 >= 0; i4--)
-      if (decorator = decorators[i4])
-        result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-    if (kind && result)
-      __defProp(target, key, result);
-    return result;
-  };
-
-  // node_modules/@lit/reactive-element/css-tag.js
-  var t = globalThis;
-  var e = t.ShadowRoot && (void 0 === t.ShadyCSS || t.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype;
-  var s = Symbol();
-  var o = /* @__PURE__ */ new WeakMap();
-  var n = class {
-    constructor(t4, e6, o5) {
-      if (this._$cssResult$ = true, o5 !== s)
-        throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
-      this.cssText = t4, this.t = e6;
-    }
-    get styleSheet() {
-      let t4 = this.o;
-      const s4 = this.t;
-      if (e && void 0 === t4) {
-        const e6 = void 0 !== s4 && 1 === s4.length;
-        e6 && (t4 = o.get(s4)), void 0 === t4 && ((this.o = t4 = new CSSStyleSheet()).replaceSync(this.cssText), e6 && o.set(s4, t4));
-      }
-      return t4;
-    }
-    toString() {
-      return this.cssText;
-    }
-  };
-  var r = (t4) => new n("string" == typeof t4 ? t4 : t4 + "", void 0, s);
-  var i = (t4, ...e6) => {
-    const o5 = 1 === t4.length ? t4[0] : e6.reduce((e7, s4, o6) => e7 + ((t5) => {
-      if (true === t5._$cssResult$)
-        return t5.cssText;
-      if ("number" == typeof t5)
-        return t5;
-      throw Error("Value passed to 'css' function must be a 'css' function result: " + t5 + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
-    })(s4) + t4[o6 + 1], t4[0]);
-    return new n(o5, t4, s);
-  };
-  var S = (s4, o5) => {
-    if (e)
-      s4.adoptedStyleSheets = o5.map((t4) => t4 instanceof CSSStyleSheet ? t4 : t4.styleSheet);
-    else
-      for (const e6 of o5) {
-        const o6 = document.createElement("style"), n6 = t.litNonce;
-        void 0 !== n6 && o6.setAttribute("nonce", n6), o6.textContent = e6.cssText, s4.appendChild(o6);
-      }
-  };
-  var c = e ? (t4) => t4 : (t4) => t4 instanceof CSSStyleSheet ? ((t5) => {
-    let e6 = "";
-    for (const s4 of t5.cssRules)
-      e6 += s4.cssText;
-    return r(e6);
-  })(t4) : t4;
-
-  // node_modules/@lit/reactive-element/reactive-element.js
-  var { is: i2, defineProperty: e2, getOwnPropertyDescriptor: r2, getOwnPropertyNames: h, getOwnPropertySymbols: o2, getPrototypeOf: n2 } = Object;
-  var a = globalThis;
-  var c2 = a.trustedTypes;
-  var l = c2 ? c2.emptyScript : "";
-  var p = a.reactiveElementPolyfillSupport;
-  var d = (t4, s4) => t4;
-  var u = { toAttribute(t4, s4) {
-    switch (s4) {
-      case Boolean:
-        t4 = t4 ? l : null;
-        break;
-      case Object:
-      case Array:
-        t4 = null == t4 ? t4 : JSON.stringify(t4);
-    }
-    return t4;
-  }, fromAttribute(t4, s4) {
-    let i4 = t4;
-    switch (s4) {
-      case Boolean:
-        i4 = null !== t4;
-        break;
-      case Number:
-        i4 = null === t4 ? null : Number(t4);
-        break;
-      case Object:
-      case Array:
-        try {
-          i4 = JSON.parse(t4);
-        } catch (t5) {
-          i4 = null;
-        }
-    }
-    return i4;
-  } };
-  var f = (t4, s4) => !i2(t4, s4);
-  var y = { attribute: true, type: String, converter: u, reflect: false, hasChanged: f };
-  Symbol.metadata ??= Symbol("metadata"), a.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-  var b = class extends HTMLElement {
-    static addInitializer(t4) {
-      this._$Ei(), (this.l ??= []).push(t4);
-    }
-    static get observedAttributes() {
-      return this.finalize(), this._$Eh && [...this._$Eh.keys()];
-    }
-    static createProperty(t4, s4 = y) {
-      if (s4.state && (s4.attribute = false), this._$Ei(), this.elementProperties.set(t4, s4), !s4.noAccessor) {
-        const i4 = Symbol(), r6 = this.getPropertyDescriptor(t4, i4, s4);
-        void 0 !== r6 && e2(this.prototype, t4, r6);
-      }
-    }
-    static getPropertyDescriptor(t4, s4, i4) {
-      const { get: e6, set: h3 } = r2(this.prototype, t4) ?? { get() {
-        return this[s4];
-      }, set(t5) {
-        this[s4] = t5;
-      } };
-      return { get() {
-        return e6?.call(this);
-      }, set(s5) {
-        const r6 = e6?.call(this);
-        h3.call(this, s5), this.requestUpdate(t4, r6, i4);
-      }, configurable: true, enumerable: true };
-    }
-    static getPropertyOptions(t4) {
-      return this.elementProperties.get(t4) ?? y;
-    }
-    static _$Ei() {
-      if (this.hasOwnProperty(d("elementProperties")))
-        return;
-      const t4 = n2(this);
-      t4.finalize(), void 0 !== t4.l && (this.l = [...t4.l]), this.elementProperties = new Map(t4.elementProperties);
-    }
-    static finalize() {
-      if (this.hasOwnProperty(d("finalized")))
-        return;
-      if (this.finalized = true, this._$Ei(), this.hasOwnProperty(d("properties"))) {
-        const t5 = this.properties, s4 = [...h(t5), ...o2(t5)];
-        for (const i4 of s4)
-          this.createProperty(i4, t5[i4]);
-      }
-      const t4 = this[Symbol.metadata];
-      if (null !== t4) {
-        const s4 = litPropertyMetadata.get(t4);
-        if (void 0 !== s4)
-          for (const [t5, i4] of s4)
-            this.elementProperties.set(t5, i4);
-      }
-      this._$Eh = /* @__PURE__ */ new Map();
-      for (const [t5, s4] of this.elementProperties) {
-        const i4 = this._$Eu(t5, s4);
-        void 0 !== i4 && this._$Eh.set(i4, t5);
-      }
-      this.elementStyles = this.finalizeStyles(this.styles);
-    }
-    static finalizeStyles(s4) {
-      const i4 = [];
-      if (Array.isArray(s4)) {
-        const e6 = new Set(s4.flat(1 / 0).reverse());
-        for (const s5 of e6)
-          i4.unshift(c(s5));
-      } else
-        void 0 !== s4 && i4.push(c(s4));
-      return i4;
-    }
-    static _$Eu(t4, s4) {
-      const i4 = s4.attribute;
-      return false === i4 ? void 0 : "string" == typeof i4 ? i4 : "string" == typeof t4 ? t4.toLowerCase() : void 0;
-    }
-    constructor() {
-      super(), this._$Ep = void 0, this.isUpdatePending = false, this.hasUpdated = false, this._$Em = null, this._$Ev();
-    }
-    _$Ev() {
-      this._$ES = new Promise((t4) => this.enableUpdating = t4), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach((t4) => t4(this));
-    }
-    addController(t4) {
-      (this._$EO ??= /* @__PURE__ */ new Set()).add(t4), void 0 !== this.renderRoot && this.isConnected && t4.hostConnected?.();
-    }
-    removeController(t4) {
-      this._$EO?.delete(t4);
-    }
-    _$E_() {
-      const t4 = /* @__PURE__ */ new Map(), s4 = this.constructor.elementProperties;
-      for (const i4 of s4.keys())
-        this.hasOwnProperty(i4) && (t4.set(i4, this[i4]), delete this[i4]);
-      t4.size > 0 && (this._$Ep = t4);
-    }
-    createRenderRoot() {
-      const t4 = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
-      return S(t4, this.constructor.elementStyles), t4;
-    }
-    connectedCallback() {
-      this.renderRoot ??= this.createRenderRoot(), this.enableUpdating(true), this._$EO?.forEach((t4) => t4.hostConnected?.());
-    }
-    enableUpdating(t4) {
-    }
-    disconnectedCallback() {
-      this._$EO?.forEach((t4) => t4.hostDisconnected?.());
-    }
-    attributeChangedCallback(t4, s4, i4) {
-      this._$AK(t4, i4);
-    }
-    _$EC(t4, s4) {
-      const i4 = this.constructor.elementProperties.get(t4), e6 = this.constructor._$Eu(t4, i4);
-      if (void 0 !== e6 && true === i4.reflect) {
-        const r6 = (void 0 !== i4.converter?.toAttribute ? i4.converter : u).toAttribute(s4, i4.type);
-        this._$Em = t4, null == r6 ? this.removeAttribute(e6) : this.setAttribute(e6, r6), this._$Em = null;
-      }
-    }
-    _$AK(t4, s4) {
-      const i4 = this.constructor, e6 = i4._$Eh.get(t4);
-      if (void 0 !== e6 && this._$Em !== e6) {
-        const t5 = i4.getPropertyOptions(e6), r6 = "function" == typeof t5.converter ? { fromAttribute: t5.converter } : void 0 !== t5.converter?.fromAttribute ? t5.converter : u;
-        this._$Em = e6, this[e6] = r6.fromAttribute(s4, t5.type), this._$Em = null;
-      }
-    }
-    requestUpdate(t4, s4, i4) {
-      if (void 0 !== t4) {
-        if (i4 ??= this.constructor.getPropertyOptions(t4), !(i4.hasChanged ?? f)(this[t4], s4))
-          return;
-        this.P(t4, s4, i4);
-      }
-      false === this.isUpdatePending && (this._$ES = this._$ET());
-    }
-    P(t4, s4, i4) {
-      this._$AL.has(t4) || this._$AL.set(t4, s4), true === i4.reflect && this._$Em !== t4 && (this._$Ej ??= /* @__PURE__ */ new Set()).add(t4);
-    }
-    async _$ET() {
-      this.isUpdatePending = true;
-      try {
-        await this._$ES;
-      } catch (t5) {
-        Promise.reject(t5);
-      }
-      const t4 = this.scheduleUpdate();
-      return null != t4 && await t4, !this.isUpdatePending;
-    }
-    scheduleUpdate() {
-      return this.performUpdate();
-    }
-    performUpdate() {
-      if (!this.isUpdatePending)
-        return;
-      if (!this.hasUpdated) {
-        if (this.renderRoot ??= this.createRenderRoot(), this._$Ep) {
-          for (const [t6, s5] of this._$Ep)
-            this[t6] = s5;
-          this._$Ep = void 0;
-        }
-        const t5 = this.constructor.elementProperties;
-        if (t5.size > 0)
-          for (const [s5, i4] of t5)
-            true !== i4.wrapped || this._$AL.has(s5) || void 0 === this[s5] || this.P(s5, this[s5], i4);
-      }
-      let t4 = false;
-      const s4 = this._$AL;
-      try {
-        t4 = this.shouldUpdate(s4), t4 ? (this.willUpdate(s4), this._$EO?.forEach((t5) => t5.hostUpdate?.()), this.update(s4)) : this._$EU();
-      } catch (s5) {
-        throw t4 = false, this._$EU(), s5;
-      }
-      t4 && this._$AE(s4);
-    }
-    willUpdate(t4) {
-    }
-    _$AE(t4) {
-      this._$EO?.forEach((t5) => t5.hostUpdated?.()), this.hasUpdated || (this.hasUpdated = true, this.firstUpdated(t4)), this.updated(t4);
-    }
-    _$EU() {
-      this._$AL = /* @__PURE__ */ new Map(), this.isUpdatePending = false;
-    }
-    get updateComplete() {
-      return this.getUpdateComplete();
-    }
-    getUpdateComplete() {
-      return this._$ES;
-    }
-    shouldUpdate(t4) {
-      return true;
-    }
-    update(t4) {
-      this._$Ej &&= this._$Ej.forEach((t5) => this._$EC(t5, this[t5])), this._$EU();
-    }
-    updated(t4) {
-    }
-    firstUpdated(t4) {
-    }
-  };
-  b.elementStyles = [], b.shadowRootOptions = { mode: "open" }, b[d("elementProperties")] = /* @__PURE__ */ new Map(), b[d("finalized")] = /* @__PURE__ */ new Map(), p?.({ ReactiveElement: b }), (a.reactiveElementVersions ??= []).push("2.0.4");
-
-  // node_modules/lit-html/lit-html.js
-  var t2 = globalThis;
-  var i3 = t2.trustedTypes;
-  var s2 = i3 ? i3.createPolicy("lit-html", { createHTML: (t4) => t4 }) : void 0;
-  var e3 = "$lit$";
-  var h2 = `lit$${(Math.random() + "").slice(9)}$`;
-  var o3 = "?" + h2;
-  var n3 = `<${o3}>`;
-  var r3 = document;
-  var l2 = () => r3.createComment("");
-  var c3 = (t4) => null === t4 || "object" != typeof t4 && "function" != typeof t4;
-  var a2 = Array.isArray;
-  var u2 = (t4) => a2(t4) || "function" == typeof t4?.[Symbol.iterator];
-  var d2 = "[ 	\n\f\r]";
-  var f2 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g;
-  var v = /-->/g;
-  var _ = />/g;
-  var m = RegExp(`>|${d2}(?:([^\\s"'>=/]+)(${d2}*=${d2}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g");
-  var p2 = /'/g;
-  var g = /"/g;
-  var $ = /^(?:script|style|textarea|title)$/i;
-  var y2 = (t4) => (i4, ...s4) => ({ _$litType$: t4, strings: i4, values: s4 });
-  var x = y2(1);
-  var b2 = y2(2);
-  var w = Symbol.for("lit-noChange");
-  var T = Symbol.for("lit-nothing");
-  var A = /* @__PURE__ */ new WeakMap();
-  var E = r3.createTreeWalker(r3, 129);
-  function C(t4, i4) {
-    if (!Array.isArray(t4) || !t4.hasOwnProperty("raw"))
-      throw Error("invalid template strings array");
-    return void 0 !== s2 ? s2.createHTML(i4) : i4;
-  }
-  var P = (t4, i4) => {
-    const s4 = t4.length - 1, o5 = [];
-    let r6, l3 = 2 === i4 ? "<svg>" : "", c4 = f2;
-    for (let i5 = 0; i5 < s4; i5++) {
-      const s5 = t4[i5];
-      let a3, u3, d3 = -1, y3 = 0;
-      for (; y3 < s5.length && (c4.lastIndex = y3, u3 = c4.exec(s5), null !== u3); )
-        y3 = c4.lastIndex, c4 === f2 ? "!--" === u3[1] ? c4 = v : void 0 !== u3[1] ? c4 = _ : void 0 !== u3[2] ? ($.test(u3[2]) && (r6 = RegExp("</" + u3[2], "g")), c4 = m) : void 0 !== u3[3] && (c4 = m) : c4 === m ? ">" === u3[0] ? (c4 = r6 ?? f2, d3 = -1) : void 0 === u3[1] ? d3 = -2 : (d3 = c4.lastIndex - u3[2].length, a3 = u3[1], c4 = void 0 === u3[3] ? m : '"' === u3[3] ? g : p2) : c4 === g || c4 === p2 ? c4 = m : c4 === v || c4 === _ ? c4 = f2 : (c4 = m, r6 = void 0);
-      const x2 = c4 === m && t4[i5 + 1].startsWith("/>") ? " " : "";
-      l3 += c4 === f2 ? s5 + n3 : d3 >= 0 ? (o5.push(a3), s5.slice(0, d3) + e3 + s5.slice(d3) + h2 + x2) : s5 + h2 + (-2 === d3 ? i5 : x2);
-    }
-    return [C(t4, l3 + (t4[s4] || "<?>") + (2 === i4 ? "</svg>" : "")), o5];
-  };
-  var V = class _V {
-    constructor({ strings: t4, _$litType$: s4 }, n6) {
-      let r6;
-      this.parts = [];
-      let c4 = 0, a3 = 0;
-      const u3 = t4.length - 1, d3 = this.parts, [f3, v2] = P(t4, s4);
-      if (this.el = _V.createElement(f3, n6), E.currentNode = this.el.content, 2 === s4) {
-        const t5 = this.el.content.firstChild;
-        t5.replaceWith(...t5.childNodes);
-      }
-      for (; null !== (r6 = E.nextNode()) && d3.length < u3; ) {
-        if (1 === r6.nodeType) {
-          if (r6.hasAttributes())
-            for (const t5 of r6.getAttributeNames())
-              if (t5.endsWith(e3)) {
-                const i4 = v2[a3++], s5 = r6.getAttribute(t5).split(h2), e6 = /([.?@])?(.*)/.exec(i4);
-                d3.push({ type: 1, index: c4, name: e6[2], strings: s5, ctor: "." === e6[1] ? k : "?" === e6[1] ? H : "@" === e6[1] ? I : R }), r6.removeAttribute(t5);
-              } else
-                t5.startsWith(h2) && (d3.push({ type: 6, index: c4 }), r6.removeAttribute(t5));
-          if ($.test(r6.tagName)) {
-            const t5 = r6.textContent.split(h2), s5 = t5.length - 1;
-            if (s5 > 0) {
-              r6.textContent = i3 ? i3.emptyScript : "";
-              for (let i4 = 0; i4 < s5; i4++)
-                r6.append(t5[i4], l2()), E.nextNode(), d3.push({ type: 2, index: ++c4 });
-              r6.append(t5[s5], l2());
-            }
-          }
-        } else if (8 === r6.nodeType)
-          if (r6.data === o3)
-            d3.push({ type: 2, index: c4 });
-          else {
-            let t5 = -1;
-            for (; -1 !== (t5 = r6.data.indexOf(h2, t5 + 1)); )
-              d3.push({ type: 7, index: c4 }), t5 += h2.length - 1;
-          }
-        c4++;
-      }
-    }
-    static createElement(t4, i4) {
-      const s4 = r3.createElement("template");
-      return s4.innerHTML = t4, s4;
-    }
-  };
-  function N(t4, i4, s4 = t4, e6) {
-    if (i4 === w)
-      return i4;
-    let h3 = void 0 !== e6 ? s4._$Co?.[e6] : s4._$Cl;
-    const o5 = c3(i4) ? void 0 : i4._$litDirective$;
-    return h3?.constructor !== o5 && (h3?._$AO?.(false), void 0 === o5 ? h3 = void 0 : (h3 = new o5(t4), h3._$AT(t4, s4, e6)), void 0 !== e6 ? (s4._$Co ??= [])[e6] = h3 : s4._$Cl = h3), void 0 !== h3 && (i4 = N(t4, h3._$AS(t4, i4.values), h3, e6)), i4;
-  }
-  var S2 = class {
-    constructor(t4, i4) {
-      this._$AV = [], this._$AN = void 0, this._$AD = t4, this._$AM = i4;
-    }
-    get parentNode() {
-      return this._$AM.parentNode;
-    }
-    get _$AU() {
-      return this._$AM._$AU;
-    }
-    u(t4) {
-      const { el: { content: i4 }, parts: s4 } = this._$AD, e6 = (t4?.creationScope ?? r3).importNode(i4, true);
-      E.currentNode = e6;
-      let h3 = E.nextNode(), o5 = 0, n6 = 0, l3 = s4[0];
-      for (; void 0 !== l3; ) {
-        if (o5 === l3.index) {
-          let i5;
-          2 === l3.type ? i5 = new M(h3, h3.nextSibling, this, t4) : 1 === l3.type ? i5 = new l3.ctor(h3, l3.name, l3.strings, this, t4) : 6 === l3.type && (i5 = new L(h3, this, t4)), this._$AV.push(i5), l3 = s4[++n6];
-        }
-        o5 !== l3?.index && (h3 = E.nextNode(), o5++);
-      }
-      return E.currentNode = r3, e6;
-    }
-    p(t4) {
-      let i4 = 0;
-      for (const s4 of this._$AV)
-        void 0 !== s4 && (void 0 !== s4.strings ? (s4._$AI(t4, s4, i4), i4 += s4.strings.length - 2) : s4._$AI(t4[i4])), i4++;
-    }
-  };
-  var M = class _M {
-    get _$AU() {
-      return this._$AM?._$AU ?? this._$Cv;
-    }
-    constructor(t4, i4, s4, e6) {
-      this.type = 2, this._$AH = T, this._$AN = void 0, this._$AA = t4, this._$AB = i4, this._$AM = s4, this.options = e6, this._$Cv = e6?.isConnected ?? true;
-    }
-    get parentNode() {
-      let t4 = this._$AA.parentNode;
-      const i4 = this._$AM;
-      return void 0 !== i4 && 11 === t4?.nodeType && (t4 = i4.parentNode), t4;
-    }
-    get startNode() {
-      return this._$AA;
-    }
-    get endNode() {
-      return this._$AB;
-    }
-    _$AI(t4, i4 = this) {
-      t4 = N(this, t4, i4), c3(t4) ? t4 === T || null == t4 || "" === t4 ? (this._$AH !== T && this._$AR(), this._$AH = T) : t4 !== this._$AH && t4 !== w && this._(t4) : void 0 !== t4._$litType$ ? this.$(t4) : void 0 !== t4.nodeType ? this.T(t4) : u2(t4) ? this.k(t4) : this._(t4);
-    }
-    S(t4) {
-      return this._$AA.parentNode.insertBefore(t4, this._$AB);
-    }
-    T(t4) {
-      this._$AH !== t4 && (this._$AR(), this._$AH = this.S(t4));
-    }
-    _(t4) {
-      this._$AH !== T && c3(this._$AH) ? this._$AA.nextSibling.data = t4 : this.T(r3.createTextNode(t4)), this._$AH = t4;
-    }
-    $(t4) {
-      const { values: i4, _$litType$: s4 } = t4, e6 = "number" == typeof s4 ? this._$AC(t4) : (void 0 === s4.el && (s4.el = V.createElement(C(s4.h, s4.h[0]), this.options)), s4);
-      if (this._$AH?._$AD === e6)
-        this._$AH.p(i4);
-      else {
-        const t5 = new S2(e6, this), s5 = t5.u(this.options);
-        t5.p(i4), this.T(s5), this._$AH = t5;
-      }
-    }
-    _$AC(t4) {
-      let i4 = A.get(t4.strings);
-      return void 0 === i4 && A.set(t4.strings, i4 = new V(t4)), i4;
-    }
-    k(t4) {
-      a2(this._$AH) || (this._$AH = [], this._$AR());
-      const i4 = this._$AH;
-      let s4, e6 = 0;
-      for (const h3 of t4)
-        e6 === i4.length ? i4.push(s4 = new _M(this.S(l2()), this.S(l2()), this, this.options)) : s4 = i4[e6], s4._$AI(h3), e6++;
-      e6 < i4.length && (this._$AR(s4 && s4._$AB.nextSibling, e6), i4.length = e6);
-    }
-    _$AR(t4 = this._$AA.nextSibling, i4) {
-      for (this._$AP?.(false, true, i4); t4 && t4 !== this._$AB; ) {
-        const i5 = t4.nextSibling;
-        t4.remove(), t4 = i5;
-      }
-    }
-    setConnected(t4) {
-      void 0 === this._$AM && (this._$Cv = t4, this._$AP?.(t4));
-    }
-  };
-  var R = class {
-    get tagName() {
-      return this.element.tagName;
-    }
-    get _$AU() {
-      return this._$AM._$AU;
-    }
-    constructor(t4, i4, s4, e6, h3) {
-      this.type = 1, this._$AH = T, this._$AN = void 0, this.element = t4, this.name = i4, this._$AM = e6, this.options = h3, s4.length > 2 || "" !== s4[0] || "" !== s4[1] ? (this._$AH = Array(s4.length - 1).fill(new String()), this.strings = s4) : this._$AH = T;
-    }
-    _$AI(t4, i4 = this, s4, e6) {
-      const h3 = this.strings;
-      let o5 = false;
-      if (void 0 === h3)
-        t4 = N(this, t4, i4, 0), o5 = !c3(t4) || t4 !== this._$AH && t4 !== w, o5 && (this._$AH = t4);
-      else {
-        const e7 = t4;
-        let n6, r6;
-        for (t4 = h3[0], n6 = 0; n6 < h3.length - 1; n6++)
-          r6 = N(this, e7[s4 + n6], i4, n6), r6 === w && (r6 = this._$AH[n6]), o5 ||= !c3(r6) || r6 !== this._$AH[n6], r6 === T ? t4 = T : t4 !== T && (t4 += (r6 ?? "") + h3[n6 + 1]), this._$AH[n6] = r6;
-      }
-      o5 && !e6 && this.j(t4);
-    }
-    j(t4) {
-      t4 === T ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t4 ?? "");
-    }
-  };
-  var k = class extends R {
-    constructor() {
-      super(...arguments), this.type = 3;
-    }
-    j(t4) {
-      this.element[this.name] = t4 === T ? void 0 : t4;
-    }
-  };
-  var H = class extends R {
-    constructor() {
-      super(...arguments), this.type = 4;
-    }
-    j(t4) {
-      this.element.toggleAttribute(this.name, !!t4 && t4 !== T);
-    }
-  };
-  var I = class extends R {
-    constructor(t4, i4, s4, e6, h3) {
-      super(t4, i4, s4, e6, h3), this.type = 5;
-    }
-    _$AI(t4, i4 = this) {
-      if ((t4 = N(this, t4, i4, 0) ?? T) === w)
-        return;
-      const s4 = this._$AH, e6 = t4 === T && s4 !== T || t4.capture !== s4.capture || t4.once !== s4.once || t4.passive !== s4.passive, h3 = t4 !== T && (s4 === T || e6);
-      e6 && this.element.removeEventListener(this.name, this, s4), h3 && this.element.addEventListener(this.name, this, t4), this._$AH = t4;
-    }
-    handleEvent(t4) {
-      "function" == typeof this._$AH ? this._$AH.call(this.options?.host ?? this.element, t4) : this._$AH.handleEvent(t4);
-    }
-  };
-  var L = class {
-    constructor(t4, i4, s4) {
-      this.element = t4, this.type = 6, this._$AN = void 0, this._$AM = i4, this.options = s4;
-    }
-    get _$AU() {
-      return this._$AM._$AU;
-    }
-    _$AI(t4) {
-      N(this, t4);
-    }
-  };
-  var Z = t2.litHtmlPolyfillSupport;
-  Z?.(V, M), (t2.litHtmlVersions ??= []).push("3.1.2");
-  var j = (t4, i4, s4) => {
-    const e6 = s4?.renderBefore ?? i4;
-    let h3 = e6._$litPart$;
-    if (void 0 === h3) {
-      const t5 = s4?.renderBefore ?? null;
-      e6._$litPart$ = h3 = new M(i4.insertBefore(l2(), t5), t5, void 0, s4 ?? {});
-    }
-    return h3._$AI(t4), h3;
-  };
-
-  // node_modules/lit-element/lit-element.js
-  var s3 = class extends b {
-    constructor() {
-      super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
-    }
-    createRenderRoot() {
-      const t4 = super.createRenderRoot();
-      return this.renderOptions.renderBefore ??= t4.firstChild, t4;
-    }
-    update(t4) {
-      const i4 = this.render();
-      this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(t4), this._$Do = j(i4, this.renderRoot, this.renderOptions);
-    }
-    connectedCallback() {
-      super.connectedCallback(), this._$Do?.setConnected(true);
-    }
-    disconnectedCallback() {
-      super.disconnectedCallback(), this._$Do?.setConnected(false);
-    }
-    render() {
-      return w;
-    }
-  };
-  s3._$litElement$ = true, s3["finalized", "finalized"] = true, globalThis.litElementHydrateSupport?.({ LitElement: s3 });
-  var r4 = globalThis.litElementPolyfillSupport;
-  r4?.({ LitElement: s3 });
-  (globalThis.litElementVersions ??= []).push("4.0.4");
-
-  // src/theme.ts
-  var themeCss = i`
+"use strict";(()=>{var gt=Object.defineProperty;var vt=Object.getOwnPropertyDescriptor;var l=(r,t,e,o)=>{for(var a=o>1?void 0:o?vt(t,e):t,s=r.length-1,d;s>=0;s--)(d=r[s])&&(a=(o?d(t,e,a):d(a))||a);return o&&a&&gt(t,e,a),a};var ye=globalThis,ke=ye.ShadowRoot&&(ye.ShadyCSS===void 0||ye.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,Be=Symbol(),Ze=new WeakMap,ie=class{constructor(t,e,o){if(this._$cssResult$=!0,o!==Be)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o,e=this.t;if(ke&&t===void 0){let o=e!==void 0&&e.length===1;o&&(t=Ze.get(e)),t===void 0&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),o&&Ze.set(e,t))}return t}toString(){return this.cssText}},Je=r=>new ie(typeof r=="string"?r:r+"",void 0,Be),c=(r,...t)=>{let e=r.length===1?r[0]:t.reduce((o,a,s)=>o+(d=>{if(d._$cssResult$===!0)return d.cssText;if(typeof d=="number")return d;throw Error("Value passed to 'css' function must be a 'css' function result: "+d+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(a)+r[s+1],r[0]);return new ie(e,r,Be)},Ie=(r,t)=>{if(ke)r.adoptedStyleSheets=t.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(let e of t){let o=document.createElement("style"),a=ye.litNonce;a!==void 0&&o.setAttribute("nonce",a),o.textContent=e.cssText,r.appendChild(o)}},we=ke?r=>r:r=>r instanceof CSSStyleSheet?(t=>{let e="";for(let o of t.cssRules)e+=o.cssText;return Je(e)})(r):r;var{is:bt,defineProperty:Ct,getOwnPropertyDescriptor:yt,getOwnPropertyNames:kt,getOwnPropertySymbols:wt,getPrototypeOf:Et}=Object,Ee=globalThis,Qe=Ee.trustedTypes,At=Qe?Qe.emptyScript:"",St=Ee.reactiveElementPolyfillSupport,ne=(r,t)=>r,fe={toAttribute(r,t){switch(t){case Boolean:r=r?At:null;break;case Object:case Array:r=r==null?r:JSON.stringify(r)}return r},fromAttribute(r,t){let e=r;switch(t){case Boolean:e=r!==null;break;case Number:e=r===null?null:Number(r);break;case Object:case Array:try{e=JSON.parse(r)}catch{e=null}}return e}},Ae=(r,t)=>!bt(r,t),Ye={attribute:!0,type:String,converter:fe,reflect:!1,hasChanged:Ae};Symbol.metadata??=Symbol("metadata"),Ee.litPropertyMetadata??=new WeakMap;var R=class extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,e=Ye){if(e.state&&(e.attribute=!1),this._$Ei(),this.elementProperties.set(t,e),!e.noAccessor){let o=Symbol(),a=this.getPropertyDescriptor(t,o,e);a!==void 0&&Ct(this.prototype,t,a)}}static getPropertyDescriptor(t,e,o){let{get:a,set:s}=yt(this.prototype,t)??{get(){return this[e]},set(d){this[e]=d}};return{get(){return a?.call(this)},set(d){let n=a?.call(this);s.call(this,d),this.requestUpdate(t,n,o)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)??Ye}static _$Ei(){if(this.hasOwnProperty(ne("elementProperties")))return;let t=Et(this);t.finalize(),t.l!==void 0&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties)}static finalize(){if(this.hasOwnProperty(ne("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(ne("properties"))){let e=this.properties,o=[...kt(e),...wt(e)];for(let a of o)this.createProperty(a,e[a])}let t=this[Symbol.metadata];if(t!==null){let e=litPropertyMetadata.get(t);if(e!==void 0)for(let[o,a]of e)this.elementProperties.set(o,a)}this._$Eh=new Map;for(let[e,o]of this.elementProperties){let a=this._$Eu(e,o);a!==void 0&&this._$Eh.set(a,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(t){let e=[];if(Array.isArray(t)){let o=new Set(t.flat(1/0).reverse());for(let a of o)e.unshift(we(a))}else t!==void 0&&e.push(we(t));return e}static _$Eu(t,e){let o=e.attribute;return o===!1?void 0:typeof o=="string"?o:typeof t=="string"?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this))}addController(t){(this._$EO??=new Set).add(t),this.renderRoot!==void 0&&this.isConnected&&t.hostConnected?.()}removeController(t){this._$EO?.delete(t)}_$E_(){let t=new Map,e=this.constructor.elementProperties;for(let o of e.keys())this.hasOwnProperty(o)&&(t.set(o,this[o]),delete this[o]);t.size>0&&(this._$Ep=t)}createRenderRoot(){let t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return Ie(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(t=>t.hostConnected?.())}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.())}attributeChangedCallback(t,e,o){this._$AK(t,o)}_$EC(t,e){let o=this.constructor.elementProperties.get(t),a=this.constructor._$Eu(t,o);if(a!==void 0&&o.reflect===!0){let s=(o.converter?.toAttribute!==void 0?o.converter:fe).toAttribute(e,o.type);this._$Em=t,s==null?this.removeAttribute(a):this.setAttribute(a,s),this._$Em=null}}_$AK(t,e){let o=this.constructor,a=o._$Eh.get(t);if(a!==void 0&&this._$Em!==a){let s=o.getPropertyOptions(a),d=typeof s.converter=="function"?{fromAttribute:s.converter}:s.converter?.fromAttribute!==void 0?s.converter:fe;this._$Em=a,this[a]=d.fromAttribute(e,s.type),this._$Em=null}}requestUpdate(t,e,o){if(t!==void 0){if(o??=this.constructor.getPropertyOptions(t),!(o.hasChanged??Ae)(this[t],e))return;this.P(t,e,o)}this.isUpdatePending===!1&&(this._$ES=this._$ET())}P(t,e,o){this._$AL.has(t)||this._$AL.set(t,e),o.reflect===!0&&this._$Em!==t&&(this._$Ej??=new Set).add(t)}async _$ET(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}let t=this.scheduleUpdate();return t!=null&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(let[a,s]of this._$Ep)this[a]=s;this._$Ep=void 0}let o=this.constructor.elementProperties;if(o.size>0)for(let[a,s]of o)s.wrapped!==!0||this._$AL.has(a)||this[a]===void 0||this.P(a,this[a],s)}let t=!1,e=this._$AL;try{t=this.shouldUpdate(e),t?(this.willUpdate(e),this._$EO?.forEach(o=>o.hostUpdate?.()),this.update(e)):this._$EU()}catch(o){throw t=!1,this._$EU(),o}t&&this._$AE(e)}willUpdate(t){}_$AE(t){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$EU(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return!0}update(t){this._$Ej&&=this._$Ej.forEach(e=>this._$EC(e,this[e])),this._$EU()}updated(t){}firstUpdated(t){}};R.elementStyles=[],R.shadowRootOptions={mode:"open"},R[ne("elementProperties")]=new Map,R[ne("finalized")]=new Map,St?.({ReactiveElement:R}),(Ee.reactiveElementVersions??=[]).push("2.0.4");var We=globalThis,Se=We.trustedTypes,Ve=Se?Se.createPolicy("lit-html",{createHTML:r=>r}):void 0,st="$lit$",U=`lit$${(Math.random()+"").slice(9)}$`,lt="?"+U,Mt=`<${lt}>`,N=document,ue=()=>N.createComment(""),me=r=>r===null||typeof r!="object"&&typeof r!="function",dt=Array.isArray,$t=r=>dt(r)||typeof r?.[Symbol.iterator]=="function",qe=`[ 	
+\f\r]`,pe=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,et=/-->/g,tt=/>/g,_=RegExp(`>|${qe}(?:([^\\s"'>=/]+)(${qe}*=${qe}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`,"g"),ot=/'/g,at=/"/g,it=/^(?:script|style|textarea|title)$/i,nt=r=>(t,...e)=>({_$litType$:r,strings:t,values:e}),i=nt(1),Nt=nt(2),L=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),rt=new WeakMap,z=N.createTreeWalker(N,129);function ft(r,t){if(!Array.isArray(r)||!r.hasOwnProperty("raw"))throw Error("invalid template strings array");return Ve!==void 0?Ve.createHTML(t):t}var Pt=(r,t)=>{let e=r.length-1,o=[],a,s=t===2?"<svg>":"",d=pe;for(let n=0;n<e;n++){let p=r[n],b,v,h=-1,C=0;for(;C<p.length&&(d.lastIndex=C,v=d.exec(p),v!==null);)C=d.lastIndex,d===pe?v[1]==="!--"?d=et:v[1]!==void 0?d=tt:v[2]!==void 0?(it.test(v[2])&&(a=RegExp("</"+v[2],"g")),d=_):v[3]!==void 0&&(d=_):d===_?v[0]===">"?(d=a??pe,h=-1):v[1]===void 0?h=-2:(h=d.lastIndex-v[2].length,b=v[1],d=v[3]===void 0?_:v[3]==='"'?at:ot):d===at||d===ot?d=_:d===et||d===tt?d=pe:(d=_,a=void 0);let k=d===_&&r[n+1].startsWith("/>")?" ":"";s+=d===pe?p+Mt:h>=0?(o.push(b),p.slice(0,h)+st+p.slice(h)+U+k):p+U+(h===-2?n:k)}return[ft(r,s+(r[e]||"<?>")+(t===2?"</svg>":"")),o]},ce=class r{constructor({strings:t,_$litType$:e},o){let a;this.parts=[];let s=0,d=0,n=t.length-1,p=this.parts,[b,v]=Pt(t,e);if(this.el=r.createElement(b,o),z.currentNode=this.el.content,e===2){let h=this.el.content.firstChild;h.replaceWith(...h.childNodes)}for(;(a=z.nextNode())!==null&&p.length<n;){if(a.nodeType===1){if(a.hasAttributes())for(let h of a.getAttributeNames())if(h.endsWith(st)){let C=v[d++],k=a.getAttribute(h).split(U),Ce=/([.?@])?(.*)/.exec(C);p.push({type:1,index:s,name:Ce[2],strings:k,ctor:Ce[1]==="."?He:Ce[1]==="?"?_e:Ce[1]==="@"?ze:V}),a.removeAttribute(h)}else h.startsWith(U)&&(p.push({type:6,index:s}),a.removeAttribute(h));if(it.test(a.tagName)){let h=a.textContent.split(U),C=h.length-1;if(C>0){a.textContent=Se?Se.emptyScript:"";for(let k=0;k<C;k++)a.append(h[k],ue()),z.nextNode(),p.push({type:2,index:++s});a.append(h[C],ue())}}}else if(a.nodeType===8)if(a.data===lt)p.push({type:2,index:s});else{let h=-1;for(;(h=a.data.indexOf(U,h+1))!==-1;)p.push({type:7,index:s}),h+=U.length-1}s++}}static createElement(t,e){let o=N.createElement("template");return o.innerHTML=t,o}};function Y(r,t,e=r,o){if(t===L)return t;let a=o!==void 0?e._$Co?.[o]:e._$Cl,s=me(t)?void 0:t._$litDirective$;return a?.constructor!==s&&(a?._$AO?.(!1),s===void 0?a=void 0:(a=new s(r),a._$AT(r,e,o)),o!==void 0?(e._$Co??=[])[o]=a:e._$Cl=a),a!==void 0&&(t=Y(r,a._$AS(r,t.values),a,o)),t}var Oe=class{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){let{el:{content:e},parts:o}=this._$AD,a=(t?.creationScope??N).importNode(e,!0);z.currentNode=a;let s=z.nextNode(),d=0,n=0,p=o[0];for(;p!==void 0;){if(d===p.index){let b;p.type===2?b=new xe(s,s.nextSibling,this,t):p.type===1?b=new p.ctor(s,p.name,p.strings,this,t):p.type===6&&(b=new Ne(s,this,t)),this._$AV.push(b),p=o[++n]}d!==p?.index&&(s=z.nextNode(),d++)}return z.currentNode=N,a}p(t){let e=0;for(let o of this._$AV)o!==void 0&&(o.strings!==void 0?(o._$AI(t,o,e),e+=o.strings.length-2):o._$AI(t[e])),e++}},xe=class r{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,o,a){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=o,this.options=a,this._$Cv=a?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode,e=this._$AM;return e!==void 0&&t?.nodeType===11&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=Y(this,t,e),me(t)?t===E||t==null||t===""?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==L&&this._(t):t._$litType$!==void 0?this.$(t):t.nodeType!==void 0?this.T(t):$t(t)?this.k(t):this._(t)}S(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.S(t))}_(t){this._$AH!==E&&me(this._$AH)?this._$AA.nextSibling.data=t:this.T(N.createTextNode(t)),this._$AH=t}$(t){let{values:e,_$litType$:o}=t,a=typeof o=="number"?this._$AC(t):(o.el===void 0&&(o.el=ce.createElement(ft(o.h,o.h[0]),this.options)),o);if(this._$AH?._$AD===a)this._$AH.p(e);else{let s=new Oe(a,this),d=s.u(this.options);s.p(e),this.T(d),this._$AH=s}}_$AC(t){let e=rt.get(t.strings);return e===void 0&&rt.set(t.strings,e=new ce(t)),e}k(t){dt(this._$AH)||(this._$AH=[],this._$AR());let e=this._$AH,o,a=0;for(let s of t)a===e.length?e.push(o=new r(this.S(ue()),this.S(ue()),this,this.options)):o=e[a],o._$AI(s),a++;a<e.length&&(this._$AR(o&&o._$AB.nextSibling,a),e.length=a)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t&&t!==this._$AB;){let o=t.nextSibling;t.remove(),t=o}}setConnected(t){this._$AM===void 0&&(this._$Cv=t,this._$AP?.(t))}},V=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,o,a,s){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=e,this._$AM=a,this.options=s,o.length>2||o[0]!==""||o[1]!==""?(this._$AH=Array(o.length-1).fill(new String),this.strings=o):this._$AH=E}_$AI(t,e=this,o,a){let s=this.strings,d=!1;if(s===void 0)t=Y(this,t,e,0),d=!me(t)||t!==this._$AH&&t!==L,d&&(this._$AH=t);else{let n=t,p,b;for(t=s[0],p=0;p<s.length-1;p++)b=Y(this,n[o+p],e,p),b===L&&(b=this._$AH[p]),d||=!me(b)||b!==this._$AH[p],b===E?t=E:t!==E&&(t+=(b??"")+s[p+1]),this._$AH[p]=b}d&&!a&&this.j(t)}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}},He=class extends V{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===E?void 0:t}},_e=class extends V{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E)}},ze=class extends V{constructor(t,e,o,a,s){super(t,e,o,a,s),this.type=5}_$AI(t,e=this){if((t=Y(this,t,e,0)??E)===L)return;let o=this._$AH,a=t===E&&o!==E||t.capture!==o.capture||t.once!==o.once||t.passive!==o.passive,s=t!==E&&(o===E||a);a&&this.element.removeEventListener(this.name,this,o),s&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){typeof this._$AH=="function"?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}},Ne=class{constructor(t,e,o){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=o}get _$AU(){return this._$AM._$AU}_$AI(t){Y(this,t)}};var Rt=We.litHtmlPolyfillSupport;Rt?.(ce,xe),(We.litHtmlVersions??=[]).push("3.1.2");var pt=(r,t,e)=>{let o=e?.renderBefore??t,a=o._$litPart$;if(a===void 0){let s=e?.renderBefore??null;o._$litPart$=a=new xe(t.insertBefore(ue(),s),s,void 0,e??{})}return a._$AI(r),a};var m=class extends R{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){let t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){let e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=pt(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return L}};m._$litElement$=!0,m.finalized=!0,globalThis.litElementHydrateSupport?.({LitElement:m});var Lt=globalThis.litElementPolyfillSupport;Lt?.({LitElement:m});(globalThis.litElementVersions??=[]).push("4.0.4");var x=r=>(t,e)=>{e!==void 0?e.addInitializer(()=>{customElements.define(r,t)}):customElements.define(r,t)};var Tt={attribute:!0,type:String,converter:fe,reflect:!1,hasChanged:Ae},Ft=(r=Tt,t,e)=>{let{kind:o,metadata:a}=e,s=globalThis.litPropertyMetadata.get(a);if(s===void 0&&globalThis.litPropertyMetadata.set(a,s=new Map),s.set(e.name,r),o==="accessor"){let{name:d}=e;return{set(n){let p=t.get.call(this);t.set.call(this,n),this.requestUpdate(d,p,r)},init(n){return n!==void 0&&this.P(d,void 0,r),n}}}if(o==="setter"){let{name:d}=e;return function(n){let p=this[d];t.call(this,n),this.requestUpdate(d,p,r)}}throw Error("Unsupported decorator location: "+o)};function f(r){return(t,e)=>typeof e=="object"?Ft(r,t,e):((o,a,s)=>{let d=a.hasOwnProperty(s);return a.constructor.createProperty(s,d?{...o,wrapped:!0}:o),d?Object.getOwnPropertyDescriptor(a,s):void 0})(r,t,e)}var W=(r,t,e)=>(e.configurable=!0,e.enumerable=!0,Reflect.decorate&&typeof t!="object"&&Object.defineProperty(r,t,e),e);function Me(r,t){return(e,o,a)=>{let s=d=>d.renderRoot?.querySelector(r)??null;if(t){let{get:d,set:n}=typeof o=="object"?e:a??(()=>{let p=Symbol();return{get(){return this[p]},set(b){this[p]=b}}})();return W(e,o,{get(){let p=d.call(this);return p===void 0&&(p=s(this),(p!==null||this.hasUpdated)&&n.call(this,p)),p}})}return W(e,o,{get(){return s(this)}})}}function ee(r,t,e){return r?t(r):e?.(r)}var ut=(r,t,e=[])=>{let o=document.createElementNS("http://www.w3.org/2000/svg",r);return Object.keys(t).forEach(a=>{o.setAttribute(a,String(t[a]))}),e.length&&e.forEach(a=>{let s=ut(...a);o.appendChild(s)}),o},he=([r,t,e])=>ut(r,t,e);var Ut=r=>Array.from(r.attributes).reduce((t,e)=>(t[e.name]=e.value,t),{}),Dt=r=>typeof r=="string"?r:!r||!r.class?"":r.class&&typeof r.class=="string"?r.class.split(" "):r.class&&Array.isArray(r.class)?r.class:"",Bt=r=>r.flatMap(Dt).map(e=>e.trim()).filter(Boolean).filter((e,o,a)=>a.indexOf(e)===o).join(" "),It=r=>r.replace(/(\w)(\w*)(_|-|\s*)/g,(t,e,o)=>e.toUpperCase()+o.toLowerCase()),je=(r,{nameAttr:t,icons:e,attrs:o})=>{let a=r.getAttribute(t);if(a==null)return;let s=It(a),d=e[s];if(!d)return console.warn(`${r.outerHTML} icon name was not found in the provided icons object.`);let n=Ut(r),[p,b,v]=d,h={...b,"data-lucide":a,...o,...n},C=Bt(["lucide",`lucide-${a}`,n,o]);C&&Object.assign(h,{class:C});let k=he([p,h,v]);return r.parentNode?.replaceChild(k,r)};var y={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round"};var $e=["svg",y,[["path",{d:"m20 13.7-2.1-2.1a2 2 0 0 0-2.8 0L9.7 17"}],["path",{d:"M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"}],["circle",{cx:"10",cy:"8",r:"2"}]]];var Xe=["svg",y,[["rect",{width:"12",height:"12",x:"2",y:"10",rx:"2",ry:"2"}],["path",{d:"m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"}],["path",{d:"M6 18h.01"}],["path",{d:"M10 14h.01"}],["path",{d:"M15 6h.01"}],["path",{d:"M18 9h.01"}]]];var Pe=["svg",y,[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{d:"M12 12v6"}],["path",{d:"m15 15-3-3-3 3"}]]];var ge=["svg",y,[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2"}],["path",{d:"M7 11V7a5 5 0 0 1 9.9-1"}]]];var Re=["svg",y,[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4"}]]];var $=["svg",y,[["path",{d:"M5 12h14"}],["path",{d:"M12 5v14"}]]];var Le=["svg",y,[["path",{d:"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{d:"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{x:"6",y:"14",width:"12",height:"8",rx:"1"}]]];var Te=["svg",y,[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7"}]]];var Fe=["svg",y,[["circle",{cx:"18",cy:"5",r:"3"}],["circle",{cx:"6",cy:"12",r:"3"}],["circle",{cx:"18",cy:"19",r:"3"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49"}]]];var ve=["svg",y,[["path",{d:"M2 21a8 8 0 0 1 13.292-6"}],["circle",{cx:"10",cy:"8",r:"5"}],["path",{d:"M19 16v6"}],["path",{d:"M22 19h-6"}]]];var P=({icons:r={},nameAttr:t="data-lucide",attrs:e={}}={})=>{if(!Object.values(r).length)throw new Error(`Please provide an icons object.
+If you want to use all the icons you can import it like:
+ \`import { createIcons, icons } from 'lucide';
+lucide.createIcons({icons});\``);if(typeof document>"u")throw new Error("`createIcons()` only works in a browser environment.");let o=document.querySelectorAll(`[${t}]`);if(Array.from(o).forEach(a=>je(a,{nameAttr:t,icons:r,attrs:e})),t==="data-lucide"){let a=document.querySelectorAll("[icon-name]");a.length>0&&(console.warn("[Lucide] Some icons were found with the now deprecated icon-name attribute. These will still be replaced for backwards compatibility, but will no longer be supported in v1.0 and you should switch to data-lucide"),Array.from(a).forEach(s=>je(s,{nameAttr:"icon-name",icons:r,attrs:e})))}};var g=c`
   h2 {
     font-family: "IM Fell English", serif;
     font-weight: 400;
@@ -726,328 +138,7 @@
       display: none;
     }
   }
-`;
-
-  // src/die_code.ts
-  function toDieCode(attributeRank, skillRank) {
-    if (attributeRank == null || skillRank == null || attributeRank <= 0 || skillRank < 0) {
-      return "";
-    }
-    const totalRank = attributeRank + skillRank;
-    const bonusDie = totalRank % 3 === 2 ? 10 : totalRank % 3 === 1 ? 8 : 6;
-    return `${Math.trunc(totalRank / 3)}d6+d${bonusDie}`;
-  }
-
-  // src/parsing.ts
-  function parseIntOrZero(input) {
-    const parsed = Number.parseInt(input, 10);
-    return isNaN(parsed) ? 0 : parsed ?? 0;
-  }
-  function renderIntOrBlank(input) {
-    if (input === void 0 || isNaN(input)) {
-      return "";
-    } else {
-      return Math.round(input).toString();
-    }
-  }
-
-  // node_modules/@lit/reactive-element/decorators/custom-element.js
-  var t3 = (t4) => (e6, o5) => {
-    void 0 !== o5 ? o5.addInitializer(() => {
-      customElements.define(t4, e6);
-    }) : customElements.define(t4, e6);
-  };
-
-  // node_modules/@lit/reactive-element/decorators/property.js
-  var o4 = { attribute: true, type: String, converter: u, reflect: false, hasChanged: f };
-  var r5 = (t4 = o4, e6, r6) => {
-    const { kind: n6, metadata: i4 } = r6;
-    let s4 = globalThis.litPropertyMetadata.get(i4);
-    if (void 0 === s4 && globalThis.litPropertyMetadata.set(i4, s4 = /* @__PURE__ */ new Map()), s4.set(r6.name, t4), "accessor" === n6) {
-      const { name: o5 } = r6;
-      return { set(r7) {
-        const n7 = e6.get.call(this);
-        e6.set.call(this, r7), this.requestUpdate(o5, n7, t4);
-      }, init(e7) {
-        return void 0 !== e7 && this.P(o5, void 0, t4), e7;
-      } };
-    }
-    if ("setter" === n6) {
-      const { name: o5 } = r6;
-      return function(r7) {
-        const n7 = this[o5];
-        e6.call(this, r7), this.requestUpdate(o5, n7, t4);
-      };
-    }
-    throw Error("Unsupported decorator location: " + n6);
-  };
-  function n4(t4) {
-    return (e6, o5) => "object" == typeof o5 ? r5(t4, e6, o5) : ((t5, e7, o6) => {
-      const r6 = e7.hasOwnProperty(o6);
-      return e7.constructor.createProperty(o6, r6 ? { ...t5, wrapped: true } : t5), r6 ? Object.getOwnPropertyDescriptor(e7, o6) : void 0;
-    })(t4, e6, o5);
-  }
-
-  // node_modules/@lit/reactive-element/decorators/base.js
-  var e4 = (e6, t4, c4) => (c4.configurable = true, c4.enumerable = true, Reflect.decorate && "object" != typeof t4 && Object.defineProperty(e6, t4, c4), c4);
-
-  // node_modules/@lit/reactive-element/decorators/query.js
-  function e5(e6, r6) {
-    return (n6, s4, i4) => {
-      const o5 = (t4) => t4.renderRoot?.querySelector(e6) ?? null;
-      if (r6) {
-        const { get: e7, set: r7 } = "object" == typeof s4 ? n6 : i4 ?? (() => {
-          const t4 = Symbol();
-          return { get() {
-            return this[t4];
-          }, set(e8) {
-            this[t4] = e8;
-          } };
-        })();
-        return e4(n6, s4, { get() {
-          let t4 = e7.call(this);
-          return void 0 === t4 && (t4 = o5(this), (null !== t4 || this.hasUpdated) && r7.call(this, t4)), t4;
-        } });
-      }
-      return e4(n6, s4, { get() {
-        return o5(this);
-      } });
-    };
-  }
-
-  // node_modules/lucide/dist/esm/createElement.js
-  var createElement = (tag, attrs, children = []) => {
-    const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
-    Object.keys(attrs).forEach((name) => {
-      element.setAttribute(name, String(attrs[name]));
-    });
-    if (children.length) {
-      children.forEach((child) => {
-        const childElement = createElement(...child);
-        element.appendChild(childElement);
-      });
-    }
-    return element;
-  };
-  var createElement$1 = ([tag, attrs, children]) => createElement(tag, attrs, children);
-
-  // node_modules/lucide/dist/esm/replaceElement.js
-  var getAttrs = (element) => Array.from(element.attributes).reduce((attrs, attr) => {
-    attrs[attr.name] = attr.value;
-    return attrs;
-  }, {});
-  var getClassNames = (attrs) => {
-    if (typeof attrs === "string")
-      return attrs;
-    if (!attrs || !attrs.class)
-      return "";
-    if (attrs.class && typeof attrs.class === "string") {
-      return attrs.class.split(" ");
-    }
-    if (attrs.class && Array.isArray(attrs.class)) {
-      return attrs.class;
-    }
-    return "";
-  };
-  var combineClassNames = (arrayOfClassnames) => {
-    const classNameArray = arrayOfClassnames.flatMap(getClassNames);
-    return classNameArray.map((classItem) => classItem.trim()).filter(Boolean).filter((value, index, self) => self.indexOf(value) === index).join(" ");
-  };
-  var toPascalCase = (string) => string.replace(/(\w)(\w*)(_|-|\s*)/g, (g0, g1, g2) => g1.toUpperCase() + g2.toLowerCase());
-  var replaceElement = (element, { nameAttr, icons, attrs }) => {
-    const iconName = element.getAttribute(nameAttr);
-    if (iconName == null)
-      return;
-    const ComponentName = toPascalCase(iconName);
-    const iconNode = icons[ComponentName];
-    if (!iconNode) {
-      return console.warn(
-        `${element.outerHTML} icon name was not found in the provided icons object.`
-      );
-    }
-    const elementAttrs = getAttrs(element);
-    const [tag, iconAttributes, children] = iconNode;
-    const iconAttrs = {
-      ...iconAttributes,
-      "data-lucide": iconName,
-      ...attrs,
-      ...elementAttrs
-    };
-    const classNames = combineClassNames(["lucide", `lucide-${iconName}`, elementAttrs, attrs]);
-    if (classNames) {
-      Object.assign(iconAttrs, {
-        class: classNames
-      });
-    }
-    const svgElement = createElement$1([tag, iconAttrs, children]);
-    return element.parentNode?.replaceChild(svgElement, element);
-  };
-
-  // node_modules/lucide/dist/esm/defaultAttributes.js
-  var defaultAttributes = {
-    xmlns: "http://www.w3.org/2000/svg",
-    width: 24,
-    height: 24,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    "stroke-width": 2,
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  };
-
-  // node_modules/lucide/dist/esm/icons/dices.js
-  var Dices = [
-    "svg",
-    defaultAttributes,
-    [
-      ["rect", { width: "12", height: "12", x: "2", y: "10", rx: "2", ry: "2" }],
-      ["path", { d: "m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6" }],
-      ["path", { d: "M6 18h.01" }],
-      ["path", { d: "M10 14h.01" }],
-      ["path", { d: "M15 6h.01" }],
-      ["path", { d: "M18 9h.01" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/file-up.js
-  var FileUp = [
-    "svg",
-    defaultAttributes,
-    [
-      ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" }],
-      ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4" }],
-      ["path", { d: "M12 12v6" }],
-      ["path", { d: "m15 15-3-3-3 3" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/lock-open.js
-  var LockOpen = [
-    "svg",
-    defaultAttributes,
-    [
-      ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2" }],
-      ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/lock.js
-  var Lock = [
-    "svg",
-    defaultAttributes,
-    [
-      ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2" }],
-      ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/plus.js
-  var Plus = [
-    "svg",
-    defaultAttributes,
-    [
-      ["path", { d: "M5 12h14" }],
-      ["path", { d: "M12 5v14" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/printer.js
-  var Printer = [
-    "svg",
-    defaultAttributes,
-    [
-      ["path", { d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" }],
-      ["path", { d: "M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" }],
-      ["rect", { x: "6", y: "14", width: "12", height: "8", rx: "1" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/save.js
-  var Save = [
-    "svg",
-    defaultAttributes,
-    [
-      [
-        "path",
-        {
-          d: "M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
-        }
-      ],
-      ["path", { d: "M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" }],
-      ["path", { d: "M7 3v4a1 1 0 0 0 1 1h7" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/share-2.js
-  var Share2 = [
-    "svg",
-    defaultAttributes,
-    [
-      ["circle", { cx: "18", cy: "5", r: "3" }],
-      ["circle", { cx: "6", cy: "12", r: "3" }],
-      ["circle", { cx: "18", cy: "19", r: "3" }],
-      ["line", { x1: "8.59", x2: "15.42", y1: "13.51", y2: "17.49" }],
-      ["line", { x1: "15.41", x2: "8.59", y1: "6.51", y2: "10.49" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/icons/user-round-plus.js
-  var UserRoundPlus = [
-    "svg",
-    defaultAttributes,
-    [
-      ["path", { d: "M2 21a8 8 0 0 1 13.292-6" }],
-      ["circle", { cx: "10", cy: "8", r: "5" }],
-      ["path", { d: "M19 16v6" }],
-      ["path", { d: "M22 19h-6" }]
-    ]
-  ];
-
-  // node_modules/lucide/dist/esm/lucide.js
-  var createIcons = ({ icons = {}, nameAttr = "data-lucide", attrs = {} } = {}) => {
-    if (!Object.values(icons).length) {
-      throw new Error(
-        "Please provide an icons object.\nIf you want to use all the icons you can import it like:\n `import { createIcons, icons } from 'lucide';\nlucide.createIcons({icons});`"
-      );
-    }
-    if (typeof document === "undefined") {
-      throw new Error("`createIcons()` only works in a browser environment.");
-    }
-    const elementsToReplace = document.querySelectorAll(`[${nameAttr}]`);
-    Array.from(elementsToReplace).forEach(
-      (element) => replaceElement(element, { nameAttr, icons, attrs })
-    );
-    if (nameAttr === "data-lucide") {
-      const deprecatedElements = document.querySelectorAll("[icon-name]");
-      if (deprecatedElements.length > 0) {
-        console.warn(
-          "[Lucide] Some icons were found with the now deprecated icon-name attribute. These will still be replaced for backwards compatibility, but will no longer be supported in v1.0 and you should switch to data-lucide"
-        );
-        Array.from(deprecatedElements).forEach(
-          (element) => replaceElement(element, { nameAttr: "icon-name", icons, attrs })
-        );
-      }
-    }
-  };
-
-  // src/lucide-icon.ts
-  var LucideIcon = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.size = 24;
-      this.strokeWidth = 2;
-    }
-    render() {
-      this.style.setProperty("--icon-width", `${this.size}px`);
-      this.style.setProperty("--icon-height", `${this.size}px`);
-      const element = createElement$1(this.icon);
-      element.setAttribute("stroke-width", this.strokeWidth.toString());
-      return x`${element}`;
-    }
-  };
-  LucideIcon.styles = [
-    i`
+`;function Ue(r,t){if(r==null||t==null||r<=0||t<=0)return"";let e=r+t,o=e%3===2?10:e%3===1?8:6;return`${Math.trunc(e/3)}d6+d${o}`}function A(r){let t=Number.parseInt(r,10);return isNaN(t)?0:t??0}function M(r){return r===void 0||isNaN(r)?"":Math.round(r).toString()}var mt={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},ct=r=>(...t)=>({_$litDirective$:r,values:t}),De=class{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,o){this._$Ct=t,this._$AM=e,this._$Ci=o}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};var xt=ct(class extends De{constructor(r){if(super(r),r.type!==mt.ATTRIBUTE||r.name!=="class"||r.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(r){return" "+Object.keys(r).filter(t=>r[t]).join(" ")+" "}update(r,[t]){if(this.st===void 0){this.st=new Set,r.strings!==void 0&&(this.nt=new Set(r.strings.join(" ").split(/\s/).filter(o=>o!=="")));for(let o in t)t[o]&&!this.nt?.has(o)&&this.st.add(o);return this.render(t)}let e=r.element.classList;for(let o of this.st)o in t||(e.remove(o),this.st.delete(o));for(let o in t){let a=!!t[o];a===this.st.has(o)||this.nt?.has(o)||(a?(e.add(o),this.st.add(o)):(e.remove(o),this.st.delete(o)))}return L}});var D=class extends m{constructor(){super(...arguments);this.size=24;this.strokeWidth=2}render(){this.style.setProperty("--icon-width",`${this.size}px`),this.style.setProperty("--icon-height",`${this.size}px`);let e=he(this.icon);return e.setAttribute("stroke-width",this.strokeWidth.toString()),i`${e}`}};D.styles=[c`
       :host {
         --icon-width: 24px;
         --icon-height: 24px;
@@ -1059,161 +150,42 @@
         width: var(--icon-width);
         height: var(--icon-height);
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Array })
-  ], LucideIcon.prototype, "icon", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], LucideIcon.prototype, "size", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], LucideIcon.prototype, "strokeWidth", 2);
-  LucideIcon = __decorateClass([
-    t3("lucide-icon")
-  ], LucideIcon);
-
-  // src/skill-view.ts
-  createIcons({ icons: { Plus } });
-  var SkillView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.generalXp = 0;
-      this.locked = true;
-    }
-    render() {
-      return x`
+    `],l([f({type:Array})],D.prototype,"icon",2),l([f({type:Number})],D.prototype,"size",2),l([f({type:Number})],D.prototype,"strokeWidth",2),D=l([x("lucide-icon")],D);P({icons:{Plus:$}});var T=class extends m{constructor(){super(...arguments);this.generalXp=0;this.locked=!0}render(){return i`
       <button
         id="buy-button"
         class="buy-button"
-        ?disabled=${!this.canAffordRank || !this.model.name}
-        title=${this.canAffordRank ? `Buy a rank of this skill for ${this.xpCostToRaise} XP` : `Cannot afford a rank of this skill (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
+        ?disabled=${!this.canAffordRank||!this.model.name}
+        title=${this.canAffordRank?`Buy a rank of this skill for ${this.xpCostToRaise} XP`:`Cannot afford a rank of this skill (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
         @click=${this.onBuyRankButtonClicked}
       >
-        <lucide-icon .icon=${Plus} .size=${16}></lucide-icon>
+        <lucide-icon .icon=${$} .size=${16}></lucide-icon>
       </button>
       <input
         type="text"
         id="skill-name"
+        class="${xt({ghosted:(this.model.rank??0)==0})}"
         .value=${this.model.name}
         @change=${this.onNameFieldChanged}
       />
       <input
         type="number"
         id="rank"
-        min="1"
+        min="0"
         ?readonly=${this.locked}
-        .value=${renderIntOrBlank(this.model.rank)}
+        .value=${M(this.model.rank)}
         @change=${this.onRankFieldChanged}
       />
       <div id="die-code">
-        ${toDieCode(this.attributeModel.rank, this.model.rank)}
+        ${Ue(this.attributeModel.rank,this.model.rank)}
       </div>
       <input
         type="number"
         id="xp"
         min="0"
-        .value=${renderIntOrBlank(this.model.xp)}
+        .value=${M(this.model.xp)}
         @change=${this.onXpFieldChanged}
       />
-    `;
-    }
-    connectedCallback() {
-      super.connectedCallback();
-    }
-    get xpAvailable() {
-      return (this.generalXp ?? 0) + (this.model.xp ?? 0);
-    }
-    get xpCostToRaise() {
-      return (this.model.rank ?? 0) + 1;
-    }
-    get canAffordRank() {
-      return this.xpAvailable >= this.xpCostToRaise;
-    }
-    onNameFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("skill-change", {
-          detail: {
-            attribute: this.attributeModel.id,
-            id: this.model.id,
-            change: { name: event.target.value }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onRankFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("skill-change", {
-          detail: {
-            attribute: this.attributeModel.id,
-            id: this.model.id,
-            change: {
-              rank: parseIntOrZero(event.target.value)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onXpFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("skill-change", {
-          detail: {
-            attribute: this.attributeModel.id,
-            id: this.model.id,
-            change: {
-              xp: parseIntOrZero(event.target.value)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onBuyRankButtonClicked(event) {
-      const generalXpSpent = Math.max(
-        0,
-        this.xpCostToRaise - (this.model.xp ?? 0)
-      );
-      this.dispatchEvent(
-        new CustomEvent("skill-change", {
-          detail: {
-            attribute: this.attributeModel.id,
-            id: this.model.id,
-            change: {
-              rank: (this.model.rank ?? 0) + 1,
-              xp: Math.max(0, (this.model.xp ?? 0) - this.xpCostToRaise)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-      if (generalXpSpent > 0) {
-        this.dispatchEvent(
-          new CustomEvent("character-change", {
-            detail: {
-              change: { xp: this.generalXp - generalXpSpent }
-            },
-            bubbles: true,
-            composed: true,
-            cancelable: false
-          })
-        );
-      }
-    }
-  };
-  SkillView.styles = [
-    themeCss,
-    i`
+    `}connectedCallback(){super.connectedCallback()}get xpAvailable(){return(this.generalXp??0)+(this.model.xp??0)}get xpCostToRaise(){return(this.model.rank??0)+1}get canAffordRank(){return this.xpAvailable>=this.xpCostToRaise}onNameFieldChanged(e){this.dispatchEvent(new CustomEvent("skill-change",{detail:{attribute:this.attributeModel.id,id:this.model.id,change:{name:e.target.value}},bubbles:!0,composed:!0,cancelable:!1}))}onRankFieldChanged(e){this.dispatchEvent(new CustomEvent("skill-change",{detail:{attribute:this.attributeModel.id,id:this.model.id,change:{rank:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onXpFieldChanged(e){this.dispatchEvent(new CustomEvent("skill-change",{detail:{attribute:this.attributeModel.id,id:this.model.id,change:{xp:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onBuyRankButtonClicked(e){let o=Math.max(0,this.xpCostToRaise-(this.model.xp??0));this.dispatchEvent(new CustomEvent("skill-change",{detail:{attribute:this.attributeModel.id,id:this.model.id,change:{rank:(this.model.rank??0)+1,xp:Math.max(0,(this.model.xp??0)-this.xpCostToRaise)}},bubbles:!0,composed:!0,cancelable:!1})),o>0&&this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{xp:this.generalXp-o}},bubbles:!0,composed:!0,cancelable:!1}))}};T.styles=[g,c`
       :host {
         display: flex;
         align-items: baseline;
@@ -1251,46 +223,22 @@
       #xp {
         margin-right: 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], SkillView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Object })
-  ], SkillView.prototype, "attributeModel", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], SkillView.prototype, "generalXp", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], SkillView.prototype, "locked", 2);
-  SkillView = __decorateClass([
-    t3("skill-view")
-  ], SkillView);
 
-  // src/attribute-view.ts
-  createIcons({ icons: { Plus } });
-  var AttributeView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.generalXp = 0;
-      this.showHeader = false;
-      this.locked = true;
-    }
-    render() {
-      return x`
-      ${this.showHeader ? this.renderHeader() : x``}
+      .ghosted {
+        opacity: 0.5;
+      }
+    `],l([f({type:Object})],T.prototype,"model",2),l([f({type:Object})],T.prototype,"attributeModel",2),l([f({type:Number})],T.prototype,"generalXp",2),l([f({type:Boolean})],T.prototype,"locked",2),T=l([x("skill-view")],T);P({icons:{Plus:$}});var F=class extends m{constructor(){super(...arguments);this.generalXp=0;this.showHeader=!1;this.locked=!0}render(){return i`
+      ${this.showHeader?this.renderHeader():i``}
       <section>
         <div id="attribute">
           <button
             id="buy-button"
             class="buy-button"
-            title=${this.canAffordRank ? `Buy a rank of this attribute for ${this.xpCostToRaise} XP` : `Cannot afford a rank of this attribute (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
+            title=${this.canAffordRank?`Buy a rank of this attribute for ${this.xpCostToRaise} XP`:`Cannot afford a rank of this attribute (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
             ?disabled=${!this.canAffordRank}
             @click=${this.onBuyRankButtonClicked}
           >
-            <lucide-icon .icon=${Plus} .size=${16}></lucide-icon>
+            <lucide-icon .icon=${$} .size=${16}></lucide-icon>
           </button>
           <div id="name">${this.model.name}</div>
           <input
@@ -1298,126 +246,34 @@
             id="rank"
             min="1"
             ?readonly=${this.locked}
-            .value=${renderIntOrBlank(this.model.rank)}
+            .value=${M(this.model.rank)}
             @change=${this.onRankChanged}
           />
-          <div id="die-code">${toDieCode(this.model.rank, 0)}</div>
+          <div id="die-code">${Ue(this.model.rank,0)}</div>
           <input
             type="number"
             id="xp"
             min="0"
-            .value=${renderIntOrBlank(this.model.xp)}
+            .value=${M(this.model.xp)}
             @change=${this.onXpFieldChanged}
           />
         </div>
-        ${this.model.skills.map(
-        (model) => x`<skill-view
-              .model=${model}
+        ${this.model.skills.map(e=>i`<skill-view
+              .model=${e}
               .attributeModel=${this.model}
               .generalXp=${this.generalXp}
               .locked=${this.locked}
-            ></skill-view>`
-      )}
-        ${!this.locked ? this.renderEditUi() : x``}
+            ></skill-view>`)}
+        ${this.locked?i``:this.renderEditUi()}
       </section>
-    `;
-    }
-    renderHeader() {
-      return x`
+    `}renderHeader(){return i`
       <header>
         <div class="text-column"></div>
         <div class="numeric-column">Rank</div>
         <div class="die-code-column">Dice</div>
         <div class="numeric-column">XP</div>
       </header>
-    `;
-    }
-    renderEditUi() {
-      return x`<button @click=${this.onAddButtonClicked}>Add skill</button>`;
-    }
-    get xpAvailable() {
-      return (this.generalXp ?? 0) + (this.model.xp ?? 0);
-    }
-    get xpCostToRaise() {
-      return ((this.model.rank ?? 0) + 1) * 5;
-    }
-    get canAffordRank() {
-      return this.xpAvailable >= this.xpCostToRaise;
-    }
-    onRankChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("attribute-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              rank: parseIntOrZero(event.target.value)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onXpFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("attribute-change", {
-          detail: {
-            id: this.model.id,
-            change: { xp: parseIntOrZero(event.target.value) }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onBuyRankButtonClicked(event) {
-      const xpCost = ((this.model.rank ?? 0) + 1) * 5;
-      const generalXpSpent = Math.max(0, xpCost - (this.model.xp ?? 0));
-      this.dispatchEvent(
-        new CustomEvent("attribute-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              rank: (this.model.rank ?? 0) + 1,
-              xp: Math.max(0, (this.model.xp ?? 0) - xpCost)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-      if (generalXpSpent > 0) {
-        this.dispatchEvent(
-          new CustomEvent("character-change", {
-            detail: {
-              change: { xp: this.generalXp - generalXpSpent }
-            },
-            bubbles: true,
-            composed: true,
-            cancelable: false
-          })
-        );
-      }
-    }
-    onAddButtonClicked(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-skill-row", {
-          detail: {
-            id: this.model.id
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-  };
-  AttributeView.styles = [
-    themeCss,
-    i`
+    `}renderEditUi(){return i`<button @click=${this.onAddButtonClicked}>Add skill</button>`}get xpAvailable(){return(this.generalXp??0)+(this.model.xp??0)}get xpCostToRaise(){return((this.model.rank??0)+1)*5}get canAffordRank(){return this.xpAvailable>=this.xpCostToRaise}onRankChanged(e){this.dispatchEvent(new CustomEvent("attribute-change",{detail:{id:this.model.id,change:{rank:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onXpFieldChanged(e){this.dispatchEvent(new CustomEvent("attribute-change",{detail:{id:this.model.id,change:{xp:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onBuyRankButtonClicked(e){let o=((this.model.rank??0)+1)*5,a=Math.max(0,o-(this.model.xp??0));this.dispatchEvent(new CustomEvent("attribute-change",{detail:{id:this.model.id,change:{rank:(this.model.rank??0)+1,xp:Math.max(0,(this.model.xp??0)-o)}},bubbles:!0,composed:!0,cancelable:!1})),a>0&&this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{xp:this.generalXp-a}},bubbles:!0,composed:!0,cancelable:!1}))}onAddButtonClicked(e){this.dispatchEvent(new CustomEvent("add-skill-row",{detail:{id:this.model.id},bubbles:!0,composed:!0,cancelable:!1}))}};F.styles=[g,c`
       :host {
         display: flex;
         flex-direction: column;
@@ -1494,72 +350,15 @@
       #die-code {
         font-size: 13px;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], AttributeView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], AttributeView.prototype, "generalXp", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], AttributeView.prototype, "showHeader", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], AttributeView.prototype, "locked", 2);
-  AttributeView = __decorateClass([
-    t3("attribute-view")
-  ], AttributeView);
-
-  // src/attributes-view.ts
-  var AttributesView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.columnCount = 3;
-      this.locked = true;
-    }
-    connectedCallback() {
-      super.connectedCallback();
-      this.recalculateColumns();
-      window.addEventListener("resize", (e6) => this.recalculateColumns());
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],F.prototype,"model",2),l([f({type:Number})],F.prototype,"generalXp",2),l([f({type:Boolean})],F.prototype,"showHeader",2),l([f({type:Boolean})],F.prototype,"locked",2),F=l([x("attribute-view")],F);var B=class extends m{constructor(){super(...arguments);this.columnCount=3;this.locked=!0}connectedCallback(){super.connectedCallback(),this.recalculateColumns(),window.addEventListener("resize",e=>this.recalculateColumns())}render(){return i`
       <h2>Attributes</h2>
       ${this.renderAttributes()}
-    `;
-    }
-    renderAttributes() {
-      const rows = [];
-      this.model.attributes.forEach((attribute, index) => {
-        const domResult = x`<attribute-view
-        .model=${attribute}
+    `}renderAttributes(){let e=[];return this.model.attributes.forEach((o,a)=>{let s=i`<attribute-view
+        .model=${o}
         .generalXp=${this.model.xp}
-        .showHeader=${index < this.columnCount}
+        .showHeader=${a<this.columnCount}
         .locked=${this.locked}
-      ></attribute-view>`;
-        if (index % this.columnCount === 0) {
-          rows.push([domResult]);
-        } else {
-          rows[rows.length - 1].push(domResult);
-        }
-      });
-      return rows.map((row) => x`<div class="attribute-group">${row}</div>`);
-    }
-    recalculateColumns() {
-      if (window.innerWidth <= 500) {
-        this.columnCount = 1;
-      } else if (window.innerWidth <= 650) {
-        this.columnCount = 2;
-      } else {
-        this.columnCount = 3;
-      }
-    }
-  };
-  AttributesView.styles = [
-    themeCss,
-    i`
+      ></attribute-view>`;a%this.columnCount===0?e.push([s]):e[e.length-1].push(s)}),e.map(o=>i`<div class="attribute-group">${o}</div>`)}recalculateColumns(){window.innerWidth<=500?this.columnCount=1:window.innerWidth<=650?this.columnCount=2:this.columnCount=3}};B.styles=[g,c`
       :host {
         position: relative;
         display: block;
@@ -1578,49 +377,15 @@
       .attribute-group > :not(:last-child) {
         margin-right: 8px;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], AttributesView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], AttributesView.prototype, "columnCount", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], AttributesView.prototype, "locked", 2);
-  AttributesView = __decorateClass([
-    t3("attributes-view")
-  ], AttributesView);
-
-  // src/character-description-view.ts
-  var CharacterDescriptionView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],B.prototype,"model",2),l([f({type:Number})],B.prototype,"columnCount",2),l([f({type:Boolean})],B.prototype,"locked",2),B=l([x("attributes-view")],B);var te=class extends m{render(){return i`
       <h2>Description</h2>
       <section>
         <textarea
-          .value=${this.model.description || ""}
+          .value=${this.model.description||""}
           @change=${this.onDescriptionChanged}
         ></textarea>
       </section>
-    `;
-    }
-    onDescriptionChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("character-change", {
-          detail: {
-            change: { description: event.target.value }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  CharacterDescriptionView.styles = [
-    themeCss,
-    i`
+    `}onDescriptionChanged(e){this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{description:e.target.value}},bubbles:!0,composed:!0}))}};te.styles=[g,c`
       :host {
         display: block;
         padding: 4px 8px;
@@ -1649,26 +414,14 @@
         min-height: 100px;
         box-shadow: inset 0 0 12px var(--paper-yellow-100);
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], CharacterDescriptionView.prototype, "model", 2);
-  CharacterDescriptionView = __decorateClass([
-    t3("character-description-view")
-  ], CharacterDescriptionView);
-
-  // src/character-info-view.ts
-  var CharacterInfoView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],te.prototype,"model",2),te=l([x("character-description-view")],te);var oe=class extends m{render(){return i`
       <h2>Character Info</h2>
       <section>
         <label
           ><span>Name</span>
           <input
             type="text"
-            .value=${this.model.name || ""}
+            .value=${this.model.name||""}
             @change=${this.fieldChangeHandler("name")}
           />
         </label>
@@ -1676,7 +429,7 @@
           ><span>Archetype</span>
           <input
             type="text"
-            .value=${this.model.archetype || ""}
+            .value=${this.model.archetype||""}
             @change=${this.fieldChangeHandler("archetype")}
           />
         </label>
@@ -1684,7 +437,7 @@
           ><span>Player Name</span>
           <input
             type="text"
-            .value=${this.model.player || ""}
+            .value=${this.model.player||""}
             @change=${this.fieldChangeHandler("player")}
           />
         </label>
@@ -1692,7 +445,7 @@
           ><span>Age</span>
           <input
             type="text"
-            .value=${this.model.age || ""}
+            .value=${this.model.age||""}
             @change=${this.fieldChangeHandler("age")}
           />
         </label>
@@ -1700,7 +453,7 @@
           ><span>Sex/Gender</span>
           <input
             type="text"
-            .value=${this.model.gender || ""}
+            .value=${this.model.gender||""}
             @change=${this.fieldChangeHandler("gender")}
           />
         </label>
@@ -1708,7 +461,7 @@
           ><span>Presentation</span>
           <input
             type="text"
-            .value=${this.model.presentation || ""}
+            .value=${this.model.presentation||""}
             @change=${this.fieldChangeHandler("presentation")}
           />
         </label>
@@ -1716,7 +469,7 @@
           ><span>Prime Values</span>
           <input
             type="text"
-            .value=${this.model.primeValue || ""}
+            .value=${this.model.primeValue||""}
             @change=${this.fieldChangeHandler("primeValue")}
           />
         </label>
@@ -1724,7 +477,7 @@
           ><span>Prime Fears</span>
           <input
             type="text"
-            .value=${this.model.primeFear || ""}
+            .value=${this.model.primeFear||""}
             @change=${this.fieldChangeHandler("primeFear")}
           />
         </label>
@@ -1732,30 +485,12 @@
           ><span>Traits</span>
           <input
             type="text"
-            .value=${this.model.traits || ""}
+            .value=${this.model.traits||""}
             @change=${this.fieldChangeHandler("traits")}
           />
         </label>
       </section>
-    `;
-    }
-    fieldChangeHandler(field) {
-      return (event) => {
-        this.dispatchEvent(
-          new CustomEvent("character-change", {
-            detail: {
-              change: { [field]: event.target.value }
-            },
-            bubbles: true,
-            composed: true
-          })
-        );
-      };
-    }
-  };
-  CharacterInfoView.styles = [
-    themeCss,
-    i`
+    `}fieldChangeHandler(e){return o=>{this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{[e]:o.target.value}},bubbles:!0,composed:!0}))}}};oe.styles=[g,c`
       :host {
         position: relative;
         display: block;
@@ -1815,19 +550,7 @@
           min-width: calc(100% - 12px);
         }
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], CharacterInfoView.prototype, "model", 2);
-  CharacterInfoView = __decorateClass([
-    t3("character-info-view")
-  ], CharacterInfoView);
-
-  // src/connection-view.ts
-  var ConnectionView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],oe.prototype,"model",2),oe=l([x("character-info-view")],oe);var ae=class extends m{render(){return i`
       <input
         type="text"
         class="name"
@@ -1839,38 +562,7 @@
         .value=${this.model.relationship}
         @change=${this.onRelationshipChanged}
       />
-    `;
-    }
-    onNameChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("connection-change", {
-          detail: {
-            id: this.model.id,
-            change: { name: event.target.value }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onRelationshipChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("connection-change", {
-          detail: {
-            id: this.model.id,
-            change: { relationship: event.target.value }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-  };
-  ConnectionView.styles = [
-    themeCss,
-    i`
+    `}onNameChanged(e){this.dispatchEvent(new CustomEvent("connection-change",{detail:{id:this.model.id,change:{name:e.target.value}},bubbles:!0,composed:!0,cancelable:!1}))}onRelationshipChanged(e){this.dispatchEvent(new CustomEvent("connection-change",{detail:{id:this.model.id,change:{relationship:e.target.value}},bubbles:!0,composed:!0,cancelable:!1}))}};ae.styles=[g,c`
       :host {
         display: flex;
         align-items: baseline;
@@ -1889,52 +581,17 @@
         min-width: 64px;
         flex: 2;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], ConnectionView.prototype, "model", 2);
-  ConnectionView = __decorateClass([
-    t3("connection-view")
-  ], ConnectionView);
-
-  // src/connections-view.ts
-  var ConnectionsView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.locked = true;
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],ae.prototype,"model",2),ae=l([x("connection-view")],ae);var j=class extends m{constructor(){super(...arguments);this.locked=!0}render(){return i`
       <h2>Connections & Bonds</h2>
       <section>
-        ${this.model.connections.map(
-        (connection) => x`<connection-view .model=${connection}></connection-view>`
-      )}
-        ${!this.locked ? this.renderAddUi() : x``}
+        ${this.model.connections.map(e=>i`<connection-view .model=${e}></connection-view>`)}
+        ${this.locked?i``:this.renderAddUi()}
       </section>
-    `;
-    }
-    renderAddUi() {
-      return x`
+    `}renderAddUi(){return i`
       <div id="add-ui">
         <button @click=${this.onAddButtonClicked}>Add row</button>
       </div>
-    `;
-    }
-    onAddButtonClicked(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-connection-row", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  ConnectionsView.styles = [
-    themeCss,
-    i`
+    `}onAddButtonClicked(e){this.dispatchEvent(new CustomEvent("add-connection-row",{detail:{},bubbles:!0,composed:!0}))}};j.styles=[g,c`
       :host {
         position: relative;
         display: block;
@@ -1996,28 +653,8 @@
           max-width: 100%;
         }
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], ConnectionsView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], ConnectionsView.prototype, "locked", 2);
-  ConnectionsView = __decorateClass([
-    t3("connections-view")
-  ], ConnectionsView);
-
-  // src/equipment-view.ts
-  var EquipmentView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.showHeader = false;
-      this.locked = true;
-    }
-    render() {
-      return x`
-      ${this.showHeader ? this.renderHeader() : x``}
+    `],l([f({type:Object})],j.prototype,"model",2),l([f({type:Boolean})],j.prototype,"locked",2),j=l([x("connections-view")],j);var I=class extends m{constructor(){super(...arguments);this.showHeader=!1;this.locked=!0}render(){return i`
+      ${this.showHeader?this.renderHeader():i``}
       <div id="content">
         <input
           type="text"
@@ -2032,48 +669,12 @@
           @change=${this.onBonusChanged}
         />
       </div>
-    `;
-    }
-    renderHeader() {
-      return x`
+    `}renderHeader(){return i`
       <header>
         <span id="name-header">Equipment</span>
         <span id="bonus-header">Bonus</span>
       </header>
-    `;
-    }
-    onNameChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("equipment-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              name: event.target.value
-            }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-    onBonusChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("equipment-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              bonus: event.target.value
-            }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  EquipmentView.styles = [
-    themeCss,
-    i`
+    `}onNameChanged(e){this.dispatchEvent(new CustomEvent("equipment-change",{detail:{id:this.model.id,change:{name:e.target.value}},bubbles:!0,composed:!0}))}onBonusChanged(e){this.dispatchEvent(new CustomEvent("equipment-change",{detail:{id:this.model.id,change:{bonus:e.target.value}},bubbles:!0,composed:!0}))}};I.styles=[g,c`
       :host {
         display: block;
       }
@@ -2110,52 +711,14 @@
         flex: 1;
         min-width: 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], EquipmentView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], EquipmentView.prototype, "showHeader", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], EquipmentView.prototype, "locked", 2);
-  EquipmentView = __decorateClass([
-    t3("equipment-view")
-  ], EquipmentView);
-
-  // src/general-xp-view.ts
-  var GeneralXPView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],I.prototype,"model",2),l([f({type:Boolean})],I.prototype,"showHeader",2),l([f({type:Boolean})],I.prototype,"locked",2),I=l([x("equipment-view")],I);var re=class extends m{render(){return i`
       <div id="label">General XP</div>
       <input
         type="number"
-        .value=${renderIntOrBlank(this.model.xp)}
+        .value=${M(this.model.xp)}
         @change=${this.onXPChanged}
       />
-    `;
-    }
-    onXPChanged(event) {
-      let newXp = parseIntOrZero(event.target.value);
-      if (isNaN(newXp)) {
-        newXp = 0;
-      }
-      this.dispatchEvent(
-        new CustomEvent("character-change", {
-          detail: {
-            change: { xp: newXp }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  GeneralXPView.styles = [
-    themeCss,
-    i`
+    `}onXPChanged(e){let o=A(e.target.value);isNaN(o)&&(o=0),this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{xp:o}},bubbles:!0,composed:!0}))}};re.styles=[g,c`
       :host {
         display: flex;
         padding: 4px;
@@ -2180,81 +743,65 @@
       input {
         flex: 1;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], GeneralXPView.prototype, "model", 2);
-  GeneralXPView = __decorateClass([
-    t3("general-xp-view")
-  ], GeneralXPView);
-
-  // src/item-view.ts
-  var ItemView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.showHeader = false;
-      this.locked = true;
-    }
-    render() {
-      return x`
-      ${this.showHeader ? this.renderHeader() : x``}
+    `],l([f({type:Object})],re.prototype,"model",2),re=l([x("general-xp-view")],re);var se=class extends m{constructor(){super(...arguments);this.on=!1}connectedCallback(){super.connectedCallback(),this.role="button"}render(){return i`
+      ${ee(this.on,()=>i`<slot name="on" @slotchange=${this.preventFocus}></slot>`,()=>i`<slot @slotchange=${this.preventFocus}></slot>`)}
+    `}preventFocus(e){let o=e.target;for(let a of o.assignedElements())a.setAttribute("tabindex","-1")}};se.styles=[g,c`
+      :host {
+        cursor: pointer;
+        display: inline-block;
+        border-radius: 50%;
+        border: 1px solid transparent;
+        color: var(--paper-brown-800);
+        margin: 0;
+      }
+      ::slotted(*) {
+        pointer-events: none;
+        user-select: none;
+        background: none;
+        box-shadow: none;
+        border-radius: 50%;
+        border: 1px solid transparent;
+        color: var(--paper-brown-800);
+        padding: 8px;
+        margin: 0;
+      }
+      :host(:hover) {
+        background: none;
+        border-color: var(--paper-brown-100);
+        box-shadow: inset 0 0 8px #e0dcbf;
+      }
+      :host(:active) {
+        background: none;
+        box-shadow: inset 0 0 8px #b8b59d;
+      }
+      :host(:focus) {
+        background: none;
+        border-color: #888;
+        border-radius: 50%;
+        box-shadow: inset 0 0 8px #e0dcbf;
+      }
+    `],l([f({type:Boolean})],se.prototype,"on",2),se=l([x("icon-button")],se);var q=class extends m{constructor(){super(...arguments);this.showHeader=!1;this.locked=!0}render(){return i`
+      ${this.showHeader?this.renderHeader():i``}
       <div id="content">
         <input
           type="text"
           id="item-name"
-          .value=${this.model.name || ""}
+          .value=${this.model.name||""}
           @change=${this.onNameChanged}
         />
         <input
           type="number"
           id="quantity"
-          .value=${renderIntOrBlank(this.model.quantity)}
+          .value=${M(this.model.quantity)}
           @change=${this.onQuantityChanged}
         />
       </div>
-    `;
-    }
-    renderHeader() {
-      return x`
+    `}renderHeader(){return i`
       <header>
         <span id="name-header">Items</span>
         <span id="quantity-header">Quantity</span>
       </header>
-    `;
-    }
-    onNameChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("item-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              name: event.target.value
-            }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-    onQuantityChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("item-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              quantity: Number.parseFloat(event.target.value)
-            }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  ItemView.styles = [
-    themeCss,
-    i`
+    `}onNameChanged(e){this.dispatchEvent(new CustomEvent("item-change",{detail:{id:this.model.id,change:{name:e.target.value}},bubbles:!0,composed:!0}))}onQuantityChanged(e){this.dispatchEvent(new CustomEvent("item-change",{detail:{id:this.model.id,change:{quantity:Number.parseFloat(e.target.value)}},bubbles:!0,composed:!0}))}};q.styles=[g,c`
       :host {
         display: block;
       }
@@ -2291,82 +838,31 @@
         flex: 1;
         min-width: 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], ItemView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], ItemView.prototype, "showHeader", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], ItemView.prototype, "locked", 2);
-  ItemView = __decorateClass([
-    t3("item-view")
-  ], ItemView);
-
-  // src/inventory-view.ts
-  var InventoryView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.locked = true;
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],q.prototype,"model",2),l([f({type:Boolean})],q.prototype,"showHeader",2),l([f({type:Boolean})],q.prototype,"locked",2),q=l([x("item-view")],q);var X=class extends m{constructor(){super(...arguments);this.locked=!0}render(){return i`
       <h2>Equipment & Items</h2>
       <section>
         <div id="equipment">
-          ${this.model.inventory.equipment.map(
-        (equipment, index) => x`<equipment-view
-                .model=${equipment}
-                .showHeader=${index === 0}
+          ${this.model.inventory.equipment.map((e,o)=>i`<equipment-view
+                .model=${e}
+                .showHeader=${o===0}
                 .locked=${this.locked}
-              ></equipment-view>`
-      )}
-          ${!this.locked ? x`<button @click=${this.onAddEquipmentButtonClicked}>
+              ></equipment-view>`)}
+          ${this.locked?i``:i`<button @click=${this.onAddEquipmentButtonClicked}>
                 Add row
-              </button>` : x``}
+              </button>`}
         </div>
         <div id="items">
-          ${this.model.inventory.items.map(
-        (item, index) => x`<item-view
-                .model=${item}
-                .showHeader=${index === 0}
+          ${this.model.inventory.items.map((e,o)=>i`<item-view
+                .model=${e}
+                .showHeader=${o===0}
                 .locked=${this.locked}
-              ></item-view>`
-      )}
-          ${!this.locked ? x`<button @click=${this.onAddItemButtonClicked}>
+              ></item-view>`)}
+          ${this.locked?i``:i`<button @click=${this.onAddItemButtonClicked}>
                 Add row
-              </button>` : x``}
+              </button>`}
         </div>
       </section>
-    `;
-    }
-    onAddEquipmentButtonClicked(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-equipment-row", {
-          detail: {},
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onAddItemButtonClicked(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-item-row", {
-          detail: {},
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-  };
-  InventoryView.styles = [
-    themeCss,
-    i`
+    `}onAddEquipmentButtonClicked(e){this.dispatchEvent(new CustomEvent("add-equipment-row",{detail:{},bubbles:!0,composed:!0,cancelable:!1}))}onAddItemButtonClicked(e){this.dispatchEvent(new CustomEvent("add-item-row",{detail:{},bubbles:!0,composed:!0,cancelable:!1}))}};X.styles=[g,c`
       :host {
         display: block;
         padding: 4px 8px;
@@ -2409,46 +905,15 @@
           flex-direction: column;
         }
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], InventoryView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], InventoryView.prototype, "locked", 2);
-  InventoryView = __decorateClass([
-    t3("inventory-view")
-  ], InventoryView);
-
-  // src/notes-view.ts
-  var NotesView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],X.prototype,"model",2),l([f({type:Boolean})],X.prototype,"locked",2),X=l([x("inventory-view")],X);var le=class extends m{render(){return i`
       <h2>Notes</h2>
       <section>
         <textarea
-          .value=${this.model.notes || ""}
+          .value=${this.model.notes||""}
           @change=${this.onNotesChanged}
         ></textarea>
       </section>
-    `;
-    }
-    onNotesChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("character-change", {
-          detail: {
-            change: { notes: event.target.value }
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  NotesView.styles = [
-    themeCss,
-    i`
+    `}onNotesChanged(e){this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{notes:e.target.value}},bubbles:!0,composed:!0}))}};le.styles=[g,c`
       :host {
         display: block;
         padding: 4px 8px;
@@ -2477,46 +942,7 @@
         flex: 1;
         min-height: 100px;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], NotesView.prototype, "model", 2);
-  NotesView = __decorateClass([
-    t3("notes-view")
-  ], NotesView);
-
-  // src/random.ts
-  function randomNormal(mean, stddev) {
-    const u3 = 1 - Math.random();
-    const v2 = Math.random();
-    const z = Math.sqrt(-2 * Math.log(u3)) * Math.cos(2 * Math.PI * v2);
-    return z * stddev + mean;
-  }
-  function selectRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-  function selectRandomEnum(anEnum) {
-    const enumValues = Object.values(anEnum);
-    return selectRandom(enumValues);
-  }
-  function selectWeighted(choices) {
-    const total = Array.from(choices.values()).reduce((a3, b3) => a3 + b3, 0);
-    const roll = Math.random() * total;
-    let accum = 0;
-    for (const choice of choices.keys()) {
-      accum += choices.get(choice);
-      if (roll < accum) {
-        return choice;
-      }
-    }
-    return Array.from(choices.keys())[0];
-  }
-
-  // src/npc-generator.ts
-  var NPCGenerator = class extends s3 {
-    render() {
-      return x`<dialog @close=${this._generateNPC}>
+    `],l([f({type:Object})],le.prototype,"model",2),le=l([x("notes-view")],le);function Ge(r,t){let e=1-Math.random(),o=Math.random();return Math.sqrt(-2*Math.log(e))*Math.cos(2*Math.PI*o)*t+r}function Ke(r){return r[Math.floor(Math.random()*r.length)]}function be(r){let t=Object.values(r);return Ke(t)}function ht(r){let t=Array.from(r.values()).reduce((a,s)=>a+s,0),e=Math.random()*t,o=0;for(let a of r.keys())if(o+=r.get(a),e<o)return a;return Array.from(r.keys())[0]}var G=class extends m{render(){return i`<dialog @close=${this._generateNPC}>
       <h2>NPC Configuration</h2>
       <div class="content">
         <div class="row">
@@ -2526,17 +952,17 @@
         <div class="row">
           <span>Focused domain:</span>
           <select id="focused-domain">
-            <option value=${0 /* PHYSICAL */}>Physical</option>
-            <option value=${1 /* SOCIAL */}>Social</option>
-            <option value=${2 /* MENTAL */}>Mental</option>
+            <option value=${0}>Physical</option>
+            <option value=${1}>Social</option>
+            <option value=${2}>Mental</option>
           </select>
         </div>
         <div class="row">
           <span>Focused aspect:</span>
           <select id="focused-aspect">
-            <option value=${0 /* POWER */}>Power</option>
-            <option value=${1 /* FINESSE */}>Finesse</option>
-            <option value=${2 /* SENSE */}>Sense</option>
+            <option value=${0}>Power</option>
+            <option value=${1}>Finesse</option>
+            <option value=${2}>Sense</option>
           </select>
         </div>
         <div class="row">
@@ -2556,154 +982,10 @@
         </div>
       </div>
       <div class="buttons">
-        <button @click=${() => this._dialog?.close("cancel")}>Cancel</button>
-        <button @click=${() => this._dialog?.close("confirm")}>Generate</button>
+        <button @click=${()=>this._dialog?.close("cancel")}>Cancel</button>
+        <button @click=${()=>this._dialog?.close("confirm")}>Generate</button>
       </div>
-    </dialog>`;
-    }
-    configure() {
-      this._dialog.showModal();
-    }
-    _generateRandomName() {
-      return "Pirate Steve";
-    }
-    _generateRandomAge() {
-      return Math.round(randomNormal(35, 10)).toString();
-    }
-    _pickRandomArchetype() {
-      return selectRandom([
-        "Swashbuckler",
-        "Scoundrel",
-        "Navigator",
-        "Dispossessed",
-        "Chronicler",
-        "Bruiser",
-        "Aristocrat",
-        "Alchemist",
-        "Administrator"
-      ]);
-    }
-    _pickRandomGender() {
-      return selectWeighted(
-        new Map(
-          Object.entries({
-            female: 1,
-            male: 1,
-            AFAB: 0.2,
-            AMAB: 0.2,
-            intersex: 0.1
-          })
-        )
-      );
-    }
-    _pickRandomPresentation() {
-      return "";
-    }
-    _pickRandomPrimeValue() {
-      return "";
-    }
-    _pickRandomPrimeFear() {
-      return "";
-    }
-    _pickRandomTraits() {
-      return "";
-    }
-    _generateAttributes(params, model) {
-      let Attribute;
-      ((Attribute2) => {
-        Attribute2[Attribute2["STRENGTH"] = 0] = "STRENGTH";
-        Attribute2[Attribute2["DEXTERITY"] = 1] = "DEXTERITY";
-        Attribute2[Attribute2["PERCEPTION"] = 2] = "PERCEPTION";
-        Attribute2[Attribute2["PRESENCE"] = 3] = "PRESENCE";
-        Attribute2[Attribute2["GRACE"] = 4] = "GRACE";
-        Attribute2[Attribute2["INTUITION"] = 5] = "INTUITION";
-        Attribute2[Attribute2["WILL"] = 6] = "WILL";
-        Attribute2[Attribute2["WITS"] = 7] = "WITS";
-        Attribute2[Attribute2["AWARENESS"] = 8] = "AWARENESS";
-      })(Attribute || (Attribute = {}));
-      const availablePoints = params.averageRank * 9;
-      const rawAttrs = Array(9).fill(0).map(() => randomNormal(1, 0.2));
-      const sum = rawAttrs.reduce((a3, b3) => a3 + b3, 0);
-      const normalizedAttrs = rawAttrs.map(
-        (a3) => Math.round(a3 / sum * availablePoints)
-      );
-      const isFocusedDomain = (attr) => attr >= params.focusedDomain * 3 && attr < (params.focusedDomain + 1) * 3;
-      const isFocusedAspect = (attr) => attr % 3 == params.focusedAspect;
-      for (let i4 = 0; i4 < Math.round(availablePoints / 4 * params.minMaxFactor); ++i4) {
-        let destination;
-        do {
-          destination = selectRandomEnum(Attribute);
-        } while (!isFocusedDomain(destination));
-        let source;
-        do {
-          source = selectRandomEnum(Attribute);
-        } while (isFocusedDomain(source) || normalizedAttrs[source] <= 1);
-        --normalizedAttrs[source];
-        ++normalizedAttrs[destination];
-        do {
-          destination = selectRandomEnum(Attribute);
-        } while (!isFocusedAspect(destination));
-        do {
-          source = selectRandomEnum(Attribute);
-        } while (isFocusedAspect(source) || normalizedAttrs[source] <= 1);
-        --normalizedAttrs[source];
-        ++normalizedAttrs[destination];
-      }
-      return model.map((m2, i4) => ({ ...m2, rank: normalizedAttrs[i4] }));
-    }
-    _generateNPC() {
-      if (this._dialog?.returnValue != "confirm") {
-        return;
-      }
-      const params = {
-        averageAttributeRank: parseIntOrZero(
-          (this.shadowRoot?.querySelector("#rank")).value
-        ),
-        focusedDomain: parseIntOrZero(
-          (this.shadowRoot?.querySelector("#focused-domain")).value
-        ),
-        focusedAspect: parseIntOrZero(
-          (this.shadowRoot?.querySelector("#focused-aspect")).value
-        ),
-        minMaxFactor: parseFloat(
-          (this.shadowRoot?.querySelector("#min-max-factor")).value
-        ),
-        hasTraits: false
-      };
-      this.dispatchEvent(
-        new CustomEvent("character-change", {
-          detail: {
-            change: {
-              name: this._generateRandomName(),
-              age: this._generateRandomAge(),
-              player: "NPC",
-              archetype: this._pickRandomArchetype(),
-              gender: this._pickRandomGender(),
-              presentation: this._pickRandomPresentation(),
-              primeValue: this._pickRandomPrimeValue(),
-              primeFear: this._pickRandomPrimeFear(),
-              traits: params.hasTraits ? this._pickRandomTraits() : "",
-              attributes: this._generateAttributes(
-                {
-                  averageRank: params.averageAttributeRank,
-                  minMaxFactor: params.minMaxFactor,
-                  focusedDomain: params.focusedDomain,
-                  focusedAspect: params.focusedAspect
-                },
-                this.model.attributes
-              )
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-  };
-  NPCGenerator.styles = [
-    themeCss,
-    i`
+    </dialog>`}configure(){this._dialog.showModal()}_generateRandomName(){return"Pirate Steve"}_generateRandomAge(){return Math.round(Ge(35,10)).toString()}_pickRandomArchetype(){return Ke(["Swashbuckler","Scoundrel","Navigator","Dispossessed","Chronicler","Bruiser","Aristocrat","Alchemist","Administrator"])}_pickRandomGender(){return ht(new Map(Object.entries({female:1,male:1,AFAB:.2,AMAB:.2,intersex:.1})))}_pickRandomPresentation(){return""}_pickRandomPrimeValue(){return""}_pickRandomPrimeFear(){return""}_pickRandomTraits(){return""}_generateAttributes(e,o){let a;(w=>(w[w.STRENGTH=0]="STRENGTH",w[w.DEXTERITY=1]="DEXTERITY",w[w.PERCEPTION=2]="PERCEPTION",w[w.PRESENCE=3]="PRESENCE",w[w.GRACE=4]="GRACE",w[w.INTUITION=5]="INTUITION",w[w.WILL=6]="WILL",w[w.WITS=7]="WITS",w[w.AWARENESS=8]="AWARENESS"))(a||={});let s=e.averageRank*9,d=Array(9).fill(0).map(()=>Ge(1,.2)),n=d.reduce((h,C)=>h+C,0),p=d.map(h=>Math.round(h/n*s)),b=h=>h>=e.focusedDomain*3&&h<(e.focusedDomain+1)*3,v=h=>h%3==e.focusedAspect;for(let h=0;h<Math.round(s/4*e.minMaxFactor);++h){let C;do C=be(a);while(!b(C));let k;do k=be(a);while(b(k)||p[k]<=1);--p[k],++p[C];do C=be(a);while(!v(C));do k=be(a);while(v(k)||p[k]<=1);--p[k],++p[C]}return o.map((h,C)=>({...h,rank:p[C]}))}_generateNPC(){if(this._dialog?.returnValue!="confirm")return;let e={averageAttributeRank:A((this.shadowRoot?.querySelector("#rank")).value),focusedDomain:A((this.shadowRoot?.querySelector("#focused-domain")).value),focusedAspect:A((this.shadowRoot?.querySelector("#focused-aspect")).value),minMaxFactor:parseFloat((this.shadowRoot?.querySelector("#min-max-factor")).value),hasTraits:!1};this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{name:this._generateRandomName(),age:this._generateRandomAge(),player:"NPC",archetype:this._pickRandomArchetype(),gender:this._pickRandomGender(),presentation:this._pickRandomPresentation(),primeValue:this._pickRandomPrimeValue(),primeFear:this._pickRandomPrimeFear(),traits:e.hasTraits?this._pickRandomTraits():"",attributes:this._generateAttributes({averageRank:e.averageAttributeRank,minMaxFactor:e.minMaxFactor,focusedDomain:e.focusedDomain,focusedAspect:e.focusedAspect},this.model.attributes)}},bubbles:!0,composed:!0,cancelable:!1}))}};G.styles=[g,c`
       h2 {
         margin: 0 0 16px;
       }
@@ -2740,36 +1022,75 @@
         box-shadow: inset 0 0 49px #e0dcbf, 0 6px 8px rgba(0, 0, 0, 0.25);
         padding: 16px;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], NPCGenerator.prototype, "model", 2);
-  __decorateClass([
-    e5("dialog")
-  ], NPCGenerator.prototype, "_dialog", 2);
-  NPCGenerator = __decorateClass([
-    t3("npc-generator")
-  ], NPCGenerator);
+    `],l([f({type:Object})],G.prototype,"model",2),l([Me("dialog")],G.prototype,"_dialog",2),G=l([x("npc-generator")],G);P({icons:[$e]});var K=class extends m{render(){return i`
+      <h2>Portrait</h2>
+      <input
+        id="file-picker"
+        type="file"
+        hidden
+        @change=${this.onPortraitPicked}
+      />
+      <section>
+        ${ee(this.model.portraitUrl,()=>i`<div
+              id="image"
+              style="background-image: url('${this.model.portraitUrl}')"
+            ></div>`,()=>i`<div id="placeholder" @click=${this.choosePortrait}>
+            <icon-button @click=${this.choosePortrait}>
+              <lucide-icon size="32" .icon=${$e}></lucide-icon>
+            </icon-button>
+          </div>`)}
+      </section>
+    `}choosePortrait(e){this.filePicker?.click(),e.stopPropagation()}onPortraitPicked(e){let o=this.filePicker?.files?.[0];if(!o)return;let a=new FileReader;a.onload=s=>{let d=s.target.result,n=new Image;n.src=d,n.onload=p=>{let b=document.createElement("canvas"),v=Math.min(1,650/n.width);b.width=n.width*v,b.height=n.height*v;let h=b.getContext("2d");h?.scale(v,v),h?.drawImage(n,0,0);let C=h?.getImageData(0,0,n.width*v,n.height*v);this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{portraitUrl:b.toDataURL("image/jpeg",.7)}},bubbles:!0,composed:!0}))}},a.readAsDataURL(o)}};K.styles=[g,c`
+      :host {
+        display: flex;
+        flex-direction: column;
+        padding: 4px 8px;
+        border-radius: 2px;
+      }
 
-  // src/specialization-view.ts
-  createIcons({ icons: { Plus } });
-  var SpecializationView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.generalXp = 0;
-      this.locked = true;
-    }
-    render() {
-      return x`
+      h2 {
+        font-size: 20px;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      section {
+        height: 100%;
+        flex: 1;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        background-color: #fff;
+        border-radius: 2px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15),
+          inset 0 0 12px var(--paper-yellow-100);
+        gap: 4px 12px;
+      }
+
+      #placeholder {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #image {
+        flex: 1;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+    `],l([f({type:Object})],K.prototype,"model",2),l([Me("#file-picker")],K.prototype,"filePicker",2),K=l([x("portrait-view")],K);P({icons:{Plus:$}});var O=class extends m{constructor(){super(...arguments);this.generalXp=0;this.locked=!0}render(){return i`
       <button
         id="buy-button"
         class="buy-button"
-        ?disabled=${!this.canAffordRank || !this.model.name}
-        title=${this.canAffordRank ? `Buy a rank of this specialization for ${this.xpCostToRaise} XP` : `Cannot afford a rank of this specialization (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
+        ?disabled=${!this.canAffordRank||!this.model.name}
+        title=${this.canAffordRank?`Buy a rank of this specialization for ${this.xpCostToRaise} XP`:`Cannot afford a rank of this specialization (need ${this.xpCostToRaise} XP, have ${this.xpAvailable})`}
         @click=${this.onBuyRankButtonClicked}
       >
-        <lucide-icon .icon=${Plus} .size=${16}></lucide-icon>
+        <lucide-icon .icon=${$} .size=${16}></lucide-icon>
       </button>
       <input
         type="text"
@@ -2782,103 +1103,18 @@
         id="rank"
         min="1"
         ?readonly=${this.locked}
-        .value=${renderIntOrBlank(this.model.rank)}
+        .value=${M(this.model.rank)}
         @change=${this.onRankFieldChanged}
       />
-      <div id="bonus">${this.model.rank ? `+${this.model.rank}` : ""}</div>
+      <div id="bonus">${this.model.rank?`+${this.model.rank}`:""}</div>
       <input
         type="number"
         id="xp"
         min="0"
-        .value=${renderIntOrBlank(this.model.xp)}
+        .value=${M(this.model.xp)}
         @change=${this.onXpFieldChanged}
       />
-    `;
-    }
-    get xpAvailable() {
-      return (this.generalXp ?? 0) + (this.model.xp ?? 0);
-    }
-    get xpCostToRaise() {
-      return (this.model.rank ?? 0) + 1;
-    }
-    get canAffordRank() {
-      return this.xpAvailable >= this.xpCostToRaise;
-    }
-    onNameFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("specialization-change", {
-          detail: {
-            id: this.model.id,
-            change: { name: event.target.value }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onRankFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("specialization-change", {
-          detail: {
-            id: this.model.id,
-            change: { rank: parseIntOrZero(event.target.value) }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onXpFieldChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("specialization-change", {
-          detail: {
-            id: this.model.id,
-            change: { xp: parseIntOrZero(event.target.value) }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-    }
-    onBuyRankButtonClicked(event) {
-      const generalXpSpent = Math.max(
-        0,
-        this.xpCostToRaise - (this.model.xp ?? 0)
-      );
-      this.dispatchEvent(
-        new CustomEvent("specialization-change", {
-          detail: {
-            id: this.model.id,
-            change: {
-              rank: (this.model.rank ?? 0) + 1,
-              xp: Math.max(0, (this.model.xp ?? 0) - this.xpCostToRaise)
-            }
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: false
-        })
-      );
-      if (generalXpSpent > 0) {
-        this.dispatchEvent(
-          new CustomEvent("character-change", {
-            detail: {
-              change: { xp: this.generalXp - generalXpSpent }
-            },
-            bubbles: true,
-            composed: true,
-            cancelable: false
-          })
-        );
-      }
-    }
-  };
-  SpecializationView.styles = [
-    themeCss,
-    i`
+    `}get xpAvailable(){return(this.generalXp??0)+(this.model.xp??0)}get xpCostToRaise(){return(this.model.rank??0)+1}get canAffordRank(){return this.xpAvailable>=this.xpCostToRaise}onNameFieldChanged(e){this.dispatchEvent(new CustomEvent("specialization-change",{detail:{id:this.model.id,change:{name:e.target.value}},bubbles:!0,composed:!0,cancelable:!1}))}onRankFieldChanged(e){this.dispatchEvent(new CustomEvent("specialization-change",{detail:{id:this.model.id,change:{rank:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onXpFieldChanged(e){this.dispatchEvent(new CustomEvent("specialization-change",{detail:{id:this.model.id,change:{xp:A(e.target.value)}},bubbles:!0,composed:!0,cancelable:!1}))}onBuyRankButtonClicked(e){let o=Math.max(0,this.xpCostToRaise-(this.model.xp??0));this.dispatchEvent(new CustomEvent("specialization-change",{detail:{id:this.model.id,change:{rank:(this.model.rank??0)+1,xp:Math.max(0,(this.model.xp??0)-this.xpCostToRaise)}},bubbles:!0,composed:!0,cancelable:!1})),o>0&&this.dispatchEvent(new CustomEvent("character-change",{detail:{change:{xp:this.generalXp-o}},bubbles:!0,composed:!0,cancelable:!1}))}};O.styles=[g,c`
       :host {
         display: flex;
         align-items: baseline;
@@ -2912,85 +1148,27 @@
         width: 36px;
         flex: none;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], SpecializationView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], SpecializationView.prototype, "generalXp", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], SpecializationView.prototype, "locked", 2);
-  SpecializationView = __decorateClass([
-    t3("specialization-view")
-  ], SpecializationView);
-
-  // src/specializations-view.ts
-  var SpecializationsView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.columnCount = 3;
-      this.locked = true;
-    }
-    connectedCallback() {
-      super.connectedCallback();
-      this.recalculateColumns();
-      window.addEventListener("resize", (e6) => this.recalculateColumns());
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],O.prototype,"model",2),l([f({type:Number})],O.prototype,"generalXp",2),l([f({type:Boolean})],O.prototype,"locked",2),O=l([x("specialization-view")],O);var H=class extends m{constructor(){super(...arguments);this.columnCount=3;this.locked=!0}connectedCallback(){super.connectedCallback(),this.recalculateColumns(),window.addEventListener("resize",e=>this.recalculateColumns())}render(){return i`
       <h2>Specializations</h2>
       <header>
-        ${Array.from(Array(this.columnCount).keys()).map(
-        () => x`<div class="header-column">
+        ${Array.from(Array(this.columnCount).keys()).map(()=>i`<div class="header-column">
             <div class="text-column"></div>
             <div class="numeric-column">Rank</div>
             <div class="die-code-column">Bonus</div>
             <div class="numeric-column last-column">XP</div>
-          </div>`
-      )}
+          </div>`)}
       </header>
       <section>
-        ${this.model.specializations.map(
-        (model) => x`<specialization-view
-              .model=${model}
+        ${this.model.specializations.map(e=>i`<specialization-view
+              .model=${e}
               .generalXp=${this.model.xp}
               .locked=${this.locked}
-            ></specialization-view>`
-      )}
-        ${!this.locked ? this.renderEditUi() : x``}
+            ></specialization-view>`)}
+        ${this.locked?i``:this.renderEditUi()}
       </section>
-    `;
-    }
-    renderEditUi() {
-      return x`<div id="edit-ui">
+    `}renderEditUi(){return i`<div id="edit-ui">
       <button @click=${this.onAddButtonClicked}>Add row</button>
-    </div>`;
-    }
-    recalculateColumns() {
-      if (window.innerWidth <= 500) {
-        this.columnCount = 1;
-      } else if (window.innerWidth <= 650) {
-        this.columnCount = 2;
-      } else {
-        this.columnCount = 3;
-      }
-    }
-    onAddButtonClicked(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-specialization-row", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  SpecializationsView.styles = [
-    themeCss,
-    i`
+    </div>`}recalculateColumns(){window.innerWidth<=500?this.columnCount=1:window.innerWidth<=650?this.columnCount=2:this.columnCount=3}onAddButtonClicked(e){this.dispatchEvent(new CustomEvent("add-specialization-row",{detail:{},bubbles:!0,composed:!0}))}};H.styles=[g,c`
       :host {
         position: relative;
         display: flex;
@@ -3101,30 +1279,8 @@
           max-width: 100%;
         }
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], SpecializationsView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], SpecializationsView.prototype, "columnCount", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], SpecializationsView.prototype, "locked", 2);
-  SpecializationsView = __decorateClass([
-    t3("specializations-view")
-  ], SpecializationsView);
-
-  // src/wound-level-view.ts
-  var WoundLevelView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.showHeader = false;
-    }
-    render() {
-      return x`
-      ${this.showHeader ? this.renderHeader() : x``}
+    `],l([f({type:Object})],H.prototype,"model",2),l([f({type:Number})],H.prototype,"columnCount",2),l([f({type:Boolean})],H.prototype,"locked",2),H=l([x("specializations-view")],H);var Z=class extends m{constructor(){super(...arguments);this.showHeader=!1}render(){return i`
+      ${this.showHeader?this.renderHeader():i``}
       <div id="content">
         <input
           type="checkbox"
@@ -3136,34 +1292,14 @@
         <span id="effects">${this.model.effects}</span>
         <span id="shock-check">${this.model.shockCheck}</span>
       </div>
-    `;
-    }
-    renderHeader() {
-      return x`
+    `}renderHeader(){return i`
       <header>
         <span id="checkbox-header"></span>
         <span id="level-header">Wounds</span>
         <span id="effects-header">Effects</span>
         <span id="shock-check-header">Shock check</span>
       </header>
-    `;
-    }
-    onCheckedChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("wound-level-change", {
-          detail: {
-            id: this.model.id,
-            checked: event.target.checked
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  WoundLevelView.styles = [
-    themeCss,
-    i`
+    `}onCheckedChanged(e){this.dispatchEvent(new CustomEvent("wound-level-change",{detail:{id:this.model.id,checked:e.target.checked},bubbles:!0,composed:!0}))}};Z.styles=[g,c`
       :host {
         display: block;
       }
@@ -3202,29 +1338,10 @@
       }
       #shock-check-header,
       #shock-check {
-        flex: 2 0 0;
+        flex: 1 0 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], WoundLevelView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], WoundLevelView.prototype, "showHeader", 2);
-  WoundLevelView = __decorateClass([
-    t3("wound-level-view")
-  ], WoundLevelView);
-
-  // src/fatigue-level-view.ts
-  var FatigueLevelView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.showHeader = false;
-    }
-    render() {
-      return x`
-      ${this.showHeader ? this.renderHeader() : x``}
+    `],l([f({type:Object})],Z.prototype,"model",2),l([f({type:Boolean})],Z.prototype,"showHeader",2),Z=l([x("wound-level-view")],Z);var J=class extends m{constructor(){super(...arguments);this.showHeader=!1}render(){return i`
+      ${this.showHeader?this.renderHeader():i``}
       <div id="content">
         <input
           type="checkbox"
@@ -3234,33 +1351,13 @@
         <span id="level">${this.model.level}</span>
         <span id="effects">${this.model.effects}</span>
       </div>
-    `;
-    }
-    renderHeader() {
-      return x`
+    `}renderHeader(){return i`
       <header>
         <span id="checkbox-header"></span>
         <span id="level-header">Fatigue</span>
         <span id="effects-header">Effects</span>
       </header>
-    `;
-    }
-    onCheckedChanged(event) {
-      this.dispatchEvent(
-        new CustomEvent("fatigue-level-change", {
-          detail: {
-            id: this.model.id,
-            checked: event.target.checked
-          },
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  FatigueLevelView.styles = [
-    themeCss,
-    i`
+    `}onCheckedChanged(e){this.dispatchEvent(new CustomEvent("fatigue-level-change",{detail:{id:this.model.id,checked:e.target.checked},bubbles:!0,composed:!0}))}};J.styles=[g,c`
       :host {
         display: block;
       }
@@ -3294,114 +1391,44 @@
       }
       #effects-header,
       #effects {
-        flex: 3 0 0;
+        flex: 1 0 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], FatigueLevelView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], FatigueLevelView.prototype, "showHeader", 2);
-  FatigueLevelView = __decorateClass([
-    t3("fatigue-level-view")
-  ], FatigueLevelView);
-
-  // src/status-view.ts
-  var StatusView = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.locked = true;
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],J.prototype,"model",2),l([f({type:Boolean})],J.prototype,"showHeader",2),J=l([x("fatigue-level-view")],J);var Q=class extends m{constructor(){super(...arguments);this.locked=!0}render(){return i`
       <h2>Status</h2>
       <section>
         <div id="wound-levels">
-          ${this.model.status.woundLevels.map(
-        (woundLevel, index) => x`<wound-level-view
-                .model=${woundLevel}
-                .showHeader=${index === 0}
-              ></wound-level-view>`
-      )}
-          ${!this.locked ? this.renderWoundEditUi() : x``}
+          ${this.model.status.woundLevels.map((e,o)=>i`<wound-level-view
+                .model=${e}
+                .showHeader=${o===0}
+              ></wound-level-view>`)}
+          ${this.locked?i``:this.renderWoundEditUi()}
         </div>
         <div id="fatigue-levels">
-          ${this.model.status.fatigueLevels.map(
-        (fatigueLevel, index) => x`<fatigue-level-view
-                .model=${fatigueLevel}
-                .showHeader=${index === 0}
-              ></fatigue-level-view>`
-      )}
-          ${!this.locked ? this.renderFatigueEditUi() : x``}
+          ${this.model.status.fatigueLevels.map((e,o)=>i`<fatigue-level-view
+                .model=${e}
+                .showHeader=${o===0}
+              ></fatigue-level-view>`)}
+          ${this.locked?i``:this.renderFatigueEditUi()}
         </div>
       </section>
-    `;
-    }
-    renderWoundEditUi() {
-      return x`
+    `}renderWoundEditUi(){return i`
       <div id="wound-edit-ui">
         <button @click=${this.onAddWoundLevel}>Add wound level</button
         ><button
-          .disabled=${this.model.status.woundLevels.length <= 6}
+          .disabled=${this.model.status.woundLevels.length<=6}
           @click=${this.onRemoveWoundLevel}
         >
           Remove wound level
         </button>
       </div>
-    `;
-    }
-    renderFatigueEditUi() {
-      return x`
+    `}renderFatigueEditUi(){return i`
       <div id="fatigue-edit-ui">
         <button @click=${this.onAddFatigueLevel}>Add fatigue level</button
         ><button @click=${this.onRemoveFatigueLevel}>
           Remove fatigue level
         </button>
       </div>
-    `;
-    }
-    onAddWoundLevel(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-wound-level", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-    onRemoveWoundLevel(event) {
-      this.dispatchEvent(
-        new CustomEvent("remove-wound-level", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-    onAddFatigueLevel(event) {
-      this.dispatchEvent(
-        new CustomEvent("add-fatigue-level", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-    onRemoveFatigueLevel(event) {
-      this.dispatchEvent(
-        new CustomEvent("remove-fatigue-level", {
-          detail: {},
-          bubbles: true,
-          composed: true
-        })
-      );
-    }
-  };
-  StatusView.styles = [
-    themeCss,
-    i`
+    `}onAddWoundLevel(e){this.dispatchEvent(new CustomEvent("add-wound-level",{detail:{},bubbles:!0,composed:!0}))}onRemoveWoundLevel(e){this.dispatchEvent(new CustomEvent("remove-wound-level",{detail:{},bubbles:!0,composed:!0}))}onAddFatigueLevel(e){this.dispatchEvent(new CustomEvent("add-fatigue-level",{detail:{},bubbles:!0,composed:!0}))}onRemoveFatigueLevel(e){this.dispatchEvent(new CustomEvent("remove-fatigue-level",{detail:{},bubbles:!0,composed:!0}))}};Q.styles=[g,c`
       :host {
         position: relative;
         display: block;
@@ -3452,22 +1479,7 @@
       button {
         flex: 1 0 0;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], StatusView.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], StatusView.prototype, "locked", 2);
-  StatusView = __decorateClass([
-    t3("status-view")
-  ], StatusView);
-
-  // src/wealth-view.ts
-  var WealthView = class extends s3 {
-    render() {
-      return x`
+    `],l([f({type:Object})],Q.prototype,"model",2),l([f({type:Boolean})],Q.prototype,"locked",2),Q=l([x("status-view")],Q);var de=class extends m{render(){return i`
       <h2>Wealth</h2>
 
       <section>
@@ -3477,70 +1489,28 @@
             <th>Party Wealth</th>
             <th>Individual Wealth</th>
           </tr>
-          ${this.model.wealth.map(
-        (wealthLevel) => x`
+          ${this.model.wealth.map(e=>i`
               <tr>
-                <td>${wealthLevel.name}</td>
+                <td>${e.name}</td>
                 <td>
                   <input
                     type="radio"
-                    .checked=${wealthLevel.selectedForParty}
-                    @change=${this.partyWealthLevelChangedHandler(
-          wealthLevel.id
-        )}
+                    .checked=${e.selectedForParty}
+                    @change=${this.partyWealthLevelChangedHandler(e.id)}
                   />
                 </td>
                 <td>
                   <input
                     type="radio"
-                    .checked=${wealthLevel.selectedForIndividual}
-                    @change=${this.individualWealthLevelChangedHandler(
-          wealthLevel.id
-        )}
+                    .checked=${e.selectedForIndividual}
+                    @change=${this.individualWealthLevelChangedHandler(e.id)}
                   />
                 </td>
               </tr>
-            `
-      )}
+            `)}
         </table>
       </section>
-    `;
-    }
-    partyWealthLevelChangedHandler(id) {
-      return (event) => {
-        this.dispatchEvent(
-          new CustomEvent("party-wealth-level-change", {
-            detail: {
-              id,
-              checked: event.target.checked
-            },
-            bubbles: true,
-            composed: true
-          })
-        );
-      };
-    }
-    individualWealthLevelChangedHandler(id) {
-      return (event) => {
-        this.dispatchEvent(
-          new CustomEvent(
-            "individual-wealth-level-change",
-            {
-              detail: {
-                id,
-                checked: event.target.checked
-              },
-              bubbles: true,
-              composed: true
-            }
-          )
-        );
-      };
-    }
-  };
-  WealthView.styles = [
-    themeCss,
-    i`
+    `}partyWealthLevelChangedHandler(e){return o=>{this.dispatchEvent(new CustomEvent("party-wealth-level-change",{detail:{id:e,checked:o.target.checked},bubbles:!0,composed:!0}))}}individualWealthLevelChangedHandler(e){return o=>{this.dispatchEvent(new CustomEvent("individual-wealth-level-change",{detail:{id:e,checked:o.target.checked},bubbles:!0,composed:!0}))}}};de.styles=[g,c`
       :host {
         position: relative;
         display: block;
@@ -3602,434 +1572,7 @@
       td {
         text-align: center;
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], WealthView.prototype, "model", 2);
-  WealthView = __decorateClass([
-    t3("wealth-view")
-  ], WealthView);
-
-  // node_modules/lit-html/directives/when.js
-  function n5(n6, r6, t4) {
-    return n6 ? r6(n6) : t4?.(n6);
-  }
-
-  // src/icon-button.ts
-  var IconButton = class extends s3 {
-    constructor() {
-      super(...arguments);
-      this.on = false;
-    }
-    connectedCallback() {
-      super.connectedCallback();
-      this.role = "button";
-    }
-    render() {
-      return x`
-      ${n5(
-        this.on,
-        () => x`<slot name="on" @slotchange=${this.preventFocus}></slot>`,
-        () => x`<slot @slotchange=${this.preventFocus}></slot>`
-      )}
-    `;
-    }
-    preventFocus(e6) {
-      const slot = e6.target;
-      for (const element of slot.assignedElements()) {
-        element.setAttribute("tabindex", "-1");
-      }
-    }
-  };
-  IconButton.styles = [
-    themeCss,
-    i`
-      :host {
-        cursor: pointer;
-        display: inline-block;
-        border-radius: 50%;
-        border: 1px solid transparent;
-        color: var(--paper-brown-800);
-        margin: 0;
-      }
-      ::slotted(*) {
-        pointer-events: none;
-        user-select: none;
-        background: none;
-        box-shadow: none;
-        border-radius: 50%;
-        border: 1px solid transparent;
-        color: var(--paper-brown-800);
-        padding: 8px;
-        margin: 0;
-      }
-      :host(:hover) {
-        background: none;
-        border-color: var(--paper-brown-100);
-        box-shadow: inset 0 0 8px #e0dcbf;
-      }
-      :host(:active) {
-        background: none;
-        box-shadow: inset 0 0 8px #b8b59d;
-      }
-      :host(:focus) {
-        background: none;
-        border-color: #888;
-        border-radius: 50%;
-        box-shadow: inset 0 0 8px #e0dcbf;
-      }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Boolean })
-  ], IconButton.prototype, "on", 2);
-  IconButton = __decorateClass([
-    t3("icon-button")
-  ], IconButton);
-
-  // src/character-sheet.ts
-  createIcons({
-    icons: {
-      FileUp,
-      Save,
-      Printer,
-      Lock,
-      LockOpen,
-      Dices,
-      UserRoundPlus,
-      Share2
-    }
-  });
-  function arrayOf(numCopies, ctor) {
-    return Array(numCopies).fill(null).map(() => ctor());
-  }
-  var CharacterSheet = class extends s3 {
-    constructor() {
-      super();
-      this.columnCount = 3;
-      this.locked = true;
-      this._printDiv = null;
-      this.model = {
-        name: "",
-        archetype: "",
-        player: "",
-        age: "",
-        gender: "",
-        presentation: "",
-        primeValue: "",
-        primeFear: "",
-        traits: "",
-        description: "",
-        notes: "",
-        xp: 0,
-        connections: arrayOf(21, () => ({
-          name: "",
-          relationship: "",
-          id: CharacterSheet.makeId()
-        })),
-        status: {
-          woundLevels: [
-            {
-              level: "1",
-              effects: "",
-              shockCheck: "",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "2",
-              effects: "-1",
-              shockCheck: "",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "3",
-              effects: "-2",
-              shockCheck: "5",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "4",
-              effects: "-1d",
-              shockCheck: "10",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "5",
-              effects: "-2d",
-              shockCheck: "15",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "6",
-              effects: "-3d",
-              shockCheck: "30",
-              checkable: true,
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "7+",
-              effects: "Death",
-              shockCheck: "\u{1F571}",
-              checkable: false,
-              checked: false,
-              id: CharacterSheet.makeId()
-            }
-          ],
-          fatigueLevels: [
-            {
-              level: "1",
-              effects: "-1d",
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "2",
-              effects: "-2d",
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "3",
-              effects: "-3d",
-              checked: false,
-              id: CharacterSheet.makeId()
-            },
-            {
-              level: "4",
-              effects: "-4d",
-              checked: false,
-              id: CharacterSheet.makeId()
-            }
-          ]
-        },
-        attributes: [
-          {
-            name: "Strength",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Dexterity",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Perception",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Presence",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Grace",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Intuition",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Will",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Wits",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          },
-          {
-            name: "Awareness",
-            id: CharacterSheet.makeId(),
-            skills: arrayOf(8, () => ({
-              name: "",
-              id: CharacterSheet.makeId()
-            }))
-          }
-        ],
-        specializations: arrayOf(15, () => ({
-          name: "",
-          rank: 0,
-          xp: 0,
-          id: CharacterSheet.makeId()
-        })),
-        inventory: {
-          equipment: arrayOf(12, () => ({
-            name: "",
-            bonus: "",
-            id: CharacterSheet.makeId()
-          })),
-          items: arrayOf(12, () => ({
-            name: "",
-            quantity: 0,
-            id: CharacterSheet.makeId()
-          }))
-        },
-        wealth: [
-          {
-            name: "Indebted",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Destitute",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Struggling",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Adequate",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Comfortable",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Prosperous",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Wealthy",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          },
-          {
-            name: "Opulent",
-            selectedForParty: false,
-            selectedForIndividual: false,
-            id: CharacterSheet.makeId()
-          }
-        ]
-      };
-      this.columnCount = 3;
-      this.locked = true;
-      this._printDiv = null;
-    }
-    /**
-     * Returns a random, very-probably-unique string.
-     */
-    static makeId() {
-      return Math.random().toString(36).slice(2, 11);
-    }
-    connectedCallback() {
-      super.connectedCallback();
-      window.addEventListener("beforeprint", (e6) => this.onBeforePrint(e6));
-      window.addEventListener("afterprint", (e6) => this.onAfterPrint(e6));
-      this.addEventListener("character-change", (e6) => this.onCharacterChange(e6));
-      this.addEventListener(
-        "connection-change",
-        (e6) => this.onConnectionChange(e6)
-      );
-      this.addEventListener(
-        "wound-level-change",
-        (e6) => this.onWoundLevelChange(e6)
-      );
-      this.addEventListener(
-        "fatigue-level-change",
-        (e6) => this.onFatigueLevelChange(e6)
-      );
-      this.addEventListener("attribute-change", (e6) => this.onAttributeChange(e6));
-      this.addEventListener("skill-change", (e6) => this.onSkillChange(e6));
-      this.addEventListener(
-        "specialization-change",
-        (e6) => this.onSpecializationChange(e6)
-      );
-      this.addEventListener("equipment-change", (e6) => this.onEquipmentChange(e6));
-      this.addEventListener("item-change", (e6) => this.onItemChange(e6));
-      this.addEventListener(
-        "party-wealth-level-change",
-        (e6) => this.onPartyWealthLevelChange(e6)
-      );
-      this.addEventListener(
-        "individual-wealth-level-change",
-        (e6) => this.onIndividualWealthLevelChange(e6)
-      );
-      this.addEventListener(
-        "add-connection-row",
-        (e6) => this.onAddConnectionRow(e6)
-      );
-      this.addEventListener("add-wound-level", (e6) => this.onAddWoundLevel(e6));
-      this.addEventListener(
-        "remove-wound-level",
-        (e6) => this.onRemoveWoundLevel(e6)
-      );
-      this.addEventListener(
-        "add-fatigue-level",
-        (e6) => this.onAddFatigueLevel(e6)
-      );
-      this.addEventListener(
-        "remove-fatigue-level",
-        (e6) => this.onRemoveFatigueLevel(e6)
-      );
-      this.addEventListener("add-skill-row", (e6) => this.onAddSkillRow(e6));
-      this.addEventListener(
-        "add-specialization-row",
-        (e6) => this.onAddSpecializationRow(e6)
-      );
-      this.addEventListener(
-        "add-equipment-row",
-        (e6) => this.onAddEquipmentRow(e6)
-      );
-      this.addEventListener("add-item-row", (e6) => this.onAddItemRow(e6));
-    }
-    render() {
-      return x`
+    `],l([f({type:Object})],de.prototype,"model",2),de=l([x("wealth-view")],de);P({icons:{FileUp:Pe,Save:Te,Printer:Le,Lock:Re,LockOpen:ge,Dices:Xe,UserRoundPlus:ve,Share2:Fe}});function S(r,t){return Array(r).fill(null).map(()=>t())}var u=class extends m{constructor(){super();this.columnCount=3;this.locked=!0;this._printDiv=null;this.model={name:"",archetype:"",player:"",age:"",gender:"",presentation:"",primeValue:"",primeFear:"",traits:"",description:"",notes:"",portraitUrl:"",xp:0,connections:S(21,()=>({name:"",relationship:"",id:u.makeId()})),status:{woundLevels:[{level:"1",effects:"",shockCheck:"",checkable:!0,checked:!1,id:u.makeId()},{level:"2",effects:"-1",shockCheck:"",checkable:!0,checked:!1,id:u.makeId()},{level:"3",effects:"-2",shockCheck:"5",checkable:!0,checked:!1,id:u.makeId()},{level:"4",effects:"-1d",shockCheck:"10",checkable:!0,checked:!1,id:u.makeId()},{level:"5",effects:"-2d",shockCheck:"15",checkable:!0,checked:!1,id:u.makeId()},{level:"6",effects:"-3d",shockCheck:"30",checkable:!0,checked:!1,id:u.makeId()},{level:"7+",effects:"Death",shockCheck:"\u{1F571}",checkable:!1,checked:!1,id:u.makeId()}],fatigueLevels:[{level:"1",effects:"-1d",checked:!1,id:u.makeId()},{level:"2",effects:"-2d",checked:!1,id:u.makeId()},{level:"3",effects:"-3d",checked:!1,id:u.makeId()},{level:"4",effects:"-4d",checked:!1,id:u.makeId()}]},attributes:[{name:"Strength",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Dexterity",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Perception",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Presence",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Grace",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Intuition",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Will",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Wits",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))},{name:"Awareness",id:u.makeId(),skills:S(8,()=>({name:"",id:u.makeId()}))}],specializations:S(15,()=>({name:"",rank:0,xp:0,id:u.makeId()})),inventory:{equipment:S(12,()=>({name:"",bonus:"",id:u.makeId()})),items:S(12,()=>({name:"",quantity:0,id:u.makeId()}))},wealth:[{name:"Indebted",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Destitute",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Struggling",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Adequate",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Comfortable",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Prosperous",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Wealthy",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()},{name:"Opulent",selectedForParty:!1,selectedForIndividual:!1,id:u.makeId()}]},this.columnCount=3,this.locked=!0,this._printDiv=null}static makeId(){return Math.random().toString(36).slice(2,11)}connectedCallback(){super.connectedCallback(),window.addEventListener("beforeprint",e=>this.onBeforePrint(e)),window.addEventListener("afterprint",e=>this.onAfterPrint(e)),this.addEventListener("character-change",e=>this.onCharacterChange(e)),this.addEventListener("connection-change",e=>this.onConnectionChange(e)),this.addEventListener("wound-level-change",e=>this.onWoundLevelChange(e)),this.addEventListener("fatigue-level-change",e=>this.onFatigueLevelChange(e)),this.addEventListener("attribute-change",e=>this.onAttributeChange(e)),this.addEventListener("skill-change",e=>this.onSkillChange(e)),this.addEventListener("specialization-change",e=>this.onSpecializationChange(e)),this.addEventListener("equipment-change",e=>this.onEquipmentChange(e)),this.addEventListener("item-change",e=>this.onItemChange(e)),this.addEventListener("party-wealth-level-change",e=>this.onPartyWealthLevelChange(e)),this.addEventListener("individual-wealth-level-change",e=>this.onIndividualWealthLevelChange(e)),this.addEventListener("add-connection-row",e=>this.onAddConnectionRow(e)),this.addEventListener("add-wound-level",e=>this.onAddWoundLevel(e)),this.addEventListener("remove-wound-level",e=>this.onRemoveWoundLevel(e)),this.addEventListener("add-fatigue-level",e=>this.onAddFatigueLevel(e)),this.addEventListener("remove-fatigue-level",e=>this.onRemoveFatigueLevel(e)),this.addEventListener("add-skill-row",e=>this.onAddSkillRow(e)),this.addEventListener("add-specialization-row",e=>this.onAddSpecializationRow(e)),this.addEventListener("add-equipment-row",e=>this.onAddEquipmentRow(e)),this.addEventListener("add-item-row",e=>this.onAddItemRow(e))}render(){return i`
       <npc-generator id="npc-generator" .model=${this.model}></npc-generator>
       <nav>
         <icon-button
@@ -4037,52 +1580,51 @@
           title="Load from file"
           @click=${this.onLoadFromFile}
         >
-          <lucide-icon .size=${20} .icon=${FileUp}></lucide-icon>
+          <lucide-icon .size=${20} .icon=${Pe}></lucide-icon>
         </icon-button>
         <icon-button
           id="save-button"
           title="Save to file"
           @click=${this.onSaveToFile}
-          ><lucide-icon .size=${20} .icon=${Save}></lucide-icon
+          ><lucide-icon .size=${20} .icon=${Te}></lucide-icon
         ></icon-button>
         <icon-button
           id="share-button"
           title="Share (mobile only)"
           @click=${this.onMobileShare}
-          ><lucide-icon .size=${20} .icon=${Share2}></lucide-icon
+          ><lucide-icon .size=${20} .icon=${Fe}></lucide-icon
         ></icon-button>
         <icon-button id="print-button" title="Print" @click=${this.onPrint}>
-          <lucide-icon .size=${20} .icon=${Printer}></lucide-icon>
+          <lucide-icon .size=${20} .icon=${Le}></lucide-icon>
         </icon-button>
         <icon-button
           id="lock-button"
           title="Lock/unlock"
           .on=${this.locked}
           @click=${this.onToggleLocked}
-          ><lucide-icon .size=${20} .icon=${LockOpen}></lucide-icon
-          ><lucide-icon slot="on" .size=${20} .icon=${Lock}></lucide-icon
+          ><lucide-icon .size=${20} .icon=${ge}></lucide-icon
+          ><lucide-icon slot="on" .size=${20} .icon=${Re}></lucide-icon
         ></icon-button>
-        ${n5(
-        true,
-        () => x`<icon-button
+        ${ee(!1,()=>i`<icon-button
               id="generate-button"
               title="Generate NPC"
-              @click=${() => {
-          this.shadowRoot.querySelector(
-            "#npc-generator"
-          ).configure();
-        }}
-              ><lucide-icon .size=${20} .icon=${UserRoundPlus}></lucide-icon
-            ></icon-button>`
-      )}
+              @click=${()=>{this.shadowRoot.querySelector("#npc-generator").configure()}}
+              ><lucide-icon .size=${20} .icon=${ve}></lucide-icon
+            ></icon-button>`)}
       </nav>
-      <h1>${this.model.name ? this.model.name : "Character Sheet"}</h1>
+      <h1>${this.model.name?this.model.name:"Character Sheet"}</h1>
       <main>
         <character-info-view .model=${this.model}></character-info-view>
-        <character-description-view
-          .model=${this.model}
-        ></character-description-view>
-        <status-view .model=${this.model} .locked=${this.locked}></status-view>
+        <section id="description-and-status">
+          <character-description-view
+            .model=${this.model}
+          ></character-description-view>
+          <status-view
+            .model=${this.model}
+            .locked=${this.locked}
+          ></status-view>
+          <portrait-view .model=${this.model}></portrait-view>
+        </section>
         <attributes-view .model=${this.model} .locked=${this.locked}>
         </attributes-view>
         <specializations-view
@@ -4101,424 +1643,7 @@
         <general-xp-view .model=${this.model}></general-xp-view>
         <notes-view .model=${this.model}></notes-view>
       </main>
-    `;
-    }
-    onCharacterChange(event) {
-      const change = event.detail.change;
-      this.model = { ...this.model, ...change };
-    }
-    onConnectionChange(event) {
-      const connectionId = event.detail.id;
-      const change = event.detail.change;
-      const oldConnectionModel = this.model.connections.find(
-        (c4) => c4.id === connectionId
-      );
-      const newConnectionModel = { ...oldConnectionModel, ...change };
-      this.model = {
-        ...this.model,
-        connections: [
-          ...this.model.connections.map(
-            (c4) => c4 === oldConnectionModel ? newConnectionModel : c4
-          )
-        ]
-      };
-    }
-    onWoundLevelChange(event) {
-      const woundLevelId = event.detail.id;
-      const checked = event.detail.checked;
-      let newWoundLevels = [...this.model.status.woundLevels];
-      const indexOfChangedLevel = newWoundLevels.findIndex(
-        (level) => level.id === woundLevelId
-      );
-      if (checked) {
-        newWoundLevels = newWoundLevels.map((level, index) => ({
-          ...level,
-          checked: index <= indexOfChangedLevel ? true : false
-        }));
-      } else {
-        newWoundLevels = newWoundLevels.map((level, index) => ({
-          ...level,
-          checked: index >= indexOfChangedLevel ? false : level.checked
-        }));
-      }
-      this.model = {
-        ...this.model,
-        status: { ...this.model.status, woundLevels: newWoundLevels }
-      };
-    }
-    onFatigueLevelChange(event) {
-      const fatigueLevelId = event.detail.id;
-      const checked = event.detail.checked;
-      let newFatigueLevels = [...this.model.status.fatigueLevels];
-      const indexOfChangedLevel = newFatigueLevels.findIndex(
-        (level) => level.id === fatigueLevelId
-      );
-      if (checked) {
-        newFatigueLevels = newFatigueLevels.map((level, index) => ({
-          ...level,
-          checked: index <= indexOfChangedLevel ? true : false
-        }));
-      } else {
-        newFatigueLevels = newFatigueLevels.map((level, index) => ({
-          ...level,
-          checked: index >= indexOfChangedLevel ? false : level.checked
-        }));
-      }
-      this.model = {
-        ...this.model,
-        status: { ...this.model.status, fatigueLevels: newFatigueLevels }
-      };
-    }
-    onAttributeChange(event) {
-      const attributeId = event.detail.id;
-      const change = event.detail.change;
-      const oldAttributeModel = this.model.attributes.find(
-        (a3) => a3.id === attributeId
-      );
-      const newAttributeModel = { ...oldAttributeModel, ...change };
-      this.model = {
-        ...this.model,
-        attributes: [
-          ...this.model.attributes.map(
-            (a3) => a3 === oldAttributeModel ? newAttributeModel : a3
-          )
-        ]
-      };
-    }
-    onSkillChange(event) {
-      const attributeId = event.detail.attribute;
-      const skillId = event.detail.id;
-      const change = event.detail.change;
-      const oldAttributeModel = this.model.attributes.find(
-        (a3) => a3.id === attributeId
-      );
-      const oldSkillModel = oldAttributeModel.skills.find(
-        (s4) => s4.id === skillId
-      );
-      const newSkillModel = { ...oldSkillModel, ...change };
-      const newAttributeModel = {
-        ...oldAttributeModel,
-        skills: [
-          ...oldAttributeModel.skills.map(
-            (s4) => s4 === oldSkillModel ? newSkillModel : s4
-          )
-        ]
-      };
-      this.model = {
-        ...this.model,
-        attributes: [
-          ...this.model.attributes.map(
-            (a3) => a3 === oldAttributeModel ? newAttributeModel : a3
-          )
-        ]
-      };
-    }
-    onSpecializationChange(event) {
-      const specializationId = event.detail.id;
-      const change = event.detail.change;
-      const oldSpecializationModel = this.model.specializations.find(
-        (s4) => s4.id === specializationId
-      );
-      const newSpecializationModel = { ...oldSpecializationModel, ...change };
-      this.model = {
-        ...this.model,
-        specializations: [
-          ...this.model.specializations.map(
-            (s4) => s4 === oldSpecializationModel ? newSpecializationModel : s4
-          )
-        ]
-      };
-    }
-    onEquipmentChange(event) {
-      const equipmentId = event.detail.id;
-      const change = event.detail.change;
-      const oldEquipmentModel = this.model.inventory.equipment.find(
-        (e6) => e6.id === equipmentId
-      );
-      const newEquipmentModel = { ...oldEquipmentModel, ...change };
-      this.model = {
-        ...this.model,
-        inventory: {
-          ...this.model.inventory,
-          equipment: [
-            ...this.model.inventory.equipment.map(
-              (e6) => e6 === oldEquipmentModel ? newEquipmentModel : e6
-            )
-          ]
-        }
-      };
-    }
-    onItemChange(event) {
-      const itemId = event.detail.id;
-      const change = event.detail.change;
-      const oldItemModel = this.model.inventory.items.find(
-        (i4) => i4.id === itemId
-      );
-      const newItemModel = { ...oldItemModel, ...change };
-      this.model = {
-        ...this.model,
-        inventory: {
-          ...this.model.inventory,
-          items: [
-            ...this.model.inventory.items.map(
-              (i4) => i4 === oldItemModel ? newItemModel : i4
-            )
-          ]
-        }
-      };
-    }
-    onPartyWealthLevelChange(event) {
-      const levelId = event.detail.id;
-      this.model = {
-        ...this.model,
-        wealth: [
-          ...this.model.wealth.map((wealth) => ({
-            ...wealth,
-            selectedForParty: wealth.id === levelId
-          }))
-        ]
-      };
-    }
-    onIndividualWealthLevelChange(event) {
-      const levelId = event.detail.id;
-      this.model = {
-        ...this.model,
-        wealth: [
-          ...this.model.wealth.map((wealth) => ({
-            ...wealth,
-            selectedForIndividual: wealth.id === levelId
-          }))
-        ]
-      };
-    }
-    onAddConnectionRow(event) {
-      this.model = {
-        ...this.model,
-        connections: [
-          ...this.model.connections,
-          ...arrayOf(3, () => ({
-            name: "",
-            relationship: "",
-            id: CharacterSheet.makeId()
-          }))
-        ]
-      };
-    }
-    onAddSpecializationRow(event) {
-      this.model = {
-        ...this.model,
-        specializations: [
-          ...this.model.specializations,
-          ...arrayOf(3, () => ({
-            name: "",
-            id: CharacterSheet.makeId()
-          }))
-        ]
-      };
-    }
-    onAddSkillRow(event) {
-      const attributeId = event.detail.id;
-      this.model = {
-        ...this.model,
-        attributes: [
-          ...this.model.attributes.map(
-            (a3) => a3.id === attributeId ? {
-              ...a3,
-              skills: [
-                ...a3.skills,
-                { name: "", rank: 0, xp: 0, id: CharacterSheet.makeId() }
-              ]
-            } : a3
-          )
-        ]
-      };
-    }
-    onAddWoundLevel(event) {
-      this.model = {
-        ...this.model,
-        status: {
-          ...this.model.status,
-          woundLevels: this.model.status.woundLevels.flatMap((level, index) => {
-            if (index === 0) {
-              return [
-                {
-                  level: "1",
-                  effects: "",
-                  shockCheck: "",
-                  checkable: true,
-                  checked: false,
-                  id: CharacterSheet.makeId()
-                },
-                { ...level, level: `${index + 2}` }
-              ];
-            } else {
-              return [{ ...level, level: `${index + 2}` }];
-            }
-          })
-        }
-      };
-    }
-    onRemoveWoundLevel(event) {
-      this.model = {
-        ...this.model,
-        status: {
-          ...this.model.status,
-          woundLevels: this.model.status.woundLevels.flatMap((level, index) => {
-            if (index === 0) {
-              return [];
-            } else {
-              return [{ ...level, level: `${index}` }];
-            }
-          })
-        }
-      };
-    }
-    onAddFatigueLevel(event) {
-      const newFatigueLevelCount = this.model.status.fatigueLevels.length + 1;
-      this.model = {
-        ...this.model,
-        status: {
-          ...this.model.status,
-          fatigueLevels: Array.from(Array(newFatigueLevelCount).keys()).map(
-            (index) => ({
-              level: `${index + 1}`,
-              effects: `-${index + 1}d`,
-              checked: this.model.status.fatigueLevels.length > index ? this.model.status.fatigueLevels[index].checked : false,
-              id: CharacterSheet.makeId()
-            })
-          )
-        }
-      };
-    }
-    onRemoveFatigueLevel(event) {
-      const newFatigueLevelCount = this.model.status.fatigueLevels.length - 1;
-      this.model = {
-        ...this.model,
-        status: {
-          ...this.model.status,
-          fatigueLevels: Array.from(Array(newFatigueLevelCount).keys()).map(
-            (index) => ({
-              level: `${index + 1}`,
-              effects: `-${index + 1}d`,
-              checked: this.model.status.fatigueLevels[index].checked,
-              id: CharacterSheet.makeId()
-            })
-          )
-        }
-      };
-    }
-    onAddEquipmentRow(event) {
-      this.model = {
-        ...this.model,
-        inventory: {
-          ...this.model.inventory,
-          equipment: [
-            ...this.model.inventory.equipment,
-            {
-              name: "",
-              bonus: "",
-              id: CharacterSheet.makeId()
-            }
-          ]
-        }
-      };
-    }
-    onAddItemRow(event) {
-      this.model = {
-        ...this.model,
-        inventory: {
-          ...this.model.inventory,
-          items: [
-            ...this.model.inventory.items,
-            {
-              name: "",
-              quantity: 0,
-              id: CharacterSheet.makeId()
-            }
-          ]
-        }
-      };
-    }
-    onSaveToFile(event) {
-      const serializedModel = JSON.stringify(this.model, void 0, 2);
-      const a3 = document.createElement("a");
-      const file = new Blob([serializedModel], { type: "application/json" });
-      a3.href = URL.createObjectURL(file);
-      a3.download = `${this._toFileName(this.model.name)}.json`;
-      a3.click();
-      URL.revokeObjectURL(a3.href);
-    }
-    async onMobileShare(event) {
-      const serializedModel = JSON.stringify(this.model, void 0, 2);
-      const blob = new Blob([serializedModel], { type: "application/json" });
-      const file = new File([blob], `${this._toFileName(this.model.name)}.json`);
-      if (!navigator.canShare({ files: [file] })) {
-        alert("Sorry, sharing is not available.  Try saving instead.");
-      }
-      try {
-        await navigator.share({ files: [file] });
-      } catch (exc) {
-        alert(`Sorry, sharing failed with the following error: ${exc.message}.`);
-      }
-    }
-    onLoadFromFile(event) {
-      const i4 = document.createElement("input");
-      i4.type = "file";
-      i4.accept = "application/json";
-      i4.addEventListener(
-        "change",
-        async () => {
-          if (!i4.files)
-            return;
-          const file = i4.files[0];
-          const json = await file.text();
-          this.model = JSON.parse(json);
-        },
-        { once: true }
-      );
-      i4.click();
-    }
-    onPrint(event) {
-      this.onBeforePrint(null);
-      requestAnimationFrame(() => {
-        window.print();
-      });
-    }
-    onBeforePrint(event) {
-      if (!this._printDiv) {
-        this._printDiv = document.createElement("div");
-        const rootElement = this.shadowRoot.getRootNode();
-        for (const component of rootElement.querySelector("main").children) {
-          const clone = component.cloneNode(true);
-          if ("model" in clone) {
-            clone.model = this.model;
-          }
-          if ("columnCount" in clone) {
-            clone.columnCount = 3;
-          }
-          this._printDiv.appendChild(clone);
-          if ("flushUpdate" in clone && typeof clone.flushUpdate === "function") {
-            clone.flushUpdate();
-          }
-        }
-        document.body.appendChild(this._printDiv);
-      }
-    }
-    onAfterPrint(event) {
-      this._printDiv?.remove();
-      this._printDiv = null;
-    }
-    onToggleLocked(event) {
-      const button = event.target;
-      this.locked = !button.on;
-    }
-    _toFileName(name) {
-      return name.replace(/\W+/g, "_").toLowerCase();
-    }
-  };
-  CharacterSheet.styles = [
-    themeCss,
-    i`
+    `}onCharacterChange(e){let o=e.detail.change;this.model={...this.model,...o}}onConnectionChange(e){let o=e.detail.id,a=e.detail.change,s=this.model.connections.find(n=>n.id===o),d={...s,...a};this.model={...this.model,connections:[...this.model.connections.map(n=>n===s?d:n)]}}onWoundLevelChange(e){let o=e.detail.id,a=e.detail.checked,s=[...this.model.status.woundLevels],d=s.findIndex(n=>n.id===o);a?s=s.map((n,p)=>({...n,checked:p<=d})):s=s.map((n,p)=>({...n,checked:p>=d?!1:n.checked})),this.model={...this.model,status:{...this.model.status,woundLevels:s}}}onFatigueLevelChange(e){let o=e.detail.id,a=e.detail.checked,s=[...this.model.status.fatigueLevels],d=s.findIndex(n=>n.id===o);a?s=s.map((n,p)=>({...n,checked:p<=d})):s=s.map((n,p)=>({...n,checked:p>=d?!1:n.checked})),this.model={...this.model,status:{...this.model.status,fatigueLevels:s}}}onAttributeChange(e){let o=e.detail.id,a=e.detail.change,s=this.model.attributes.find(n=>n.id===o),d={...s,...a};this.model={...this.model,attributes:[...this.model.attributes.map(n=>n===s?d:n)]}}onSkillChange(e){let o=e.detail.attribute,a=e.detail.id,s=e.detail.change,d=this.model.attributes.find(v=>v.id===o),n=d.skills.find(v=>v.id===a),p={...n,...s},b={...d,skills:[...d.skills.map(v=>v===n?p:v)]};this.model={...this.model,attributes:[...this.model.attributes.map(v=>v===d?b:v)]}}onSpecializationChange(e){let o=e.detail.id,a=e.detail.change,s=this.model.specializations.find(n=>n.id===o),d={...s,...a};this.model={...this.model,specializations:[...this.model.specializations.map(n=>n===s?d:n)]}}onEquipmentChange(e){let o=e.detail.id,a=e.detail.change,s=this.model.inventory.equipment.find(n=>n.id===o),d={...s,...a};this.model={...this.model,inventory:{...this.model.inventory,equipment:[...this.model.inventory.equipment.map(n=>n===s?d:n)]}}}onItemChange(e){let o=e.detail.id,a=e.detail.change,s=this.model.inventory.items.find(n=>n.id===o),d={...s,...a};this.model={...this.model,inventory:{...this.model.inventory,items:[...this.model.inventory.items.map(n=>n===s?d:n)]}}}onPartyWealthLevelChange(e){let o=e.detail.id;this.model={...this.model,wealth:[...this.model.wealth.map(a=>({...a,selectedForParty:a.id===o}))]}}onIndividualWealthLevelChange(e){let o=e.detail.id;this.model={...this.model,wealth:[...this.model.wealth.map(a=>({...a,selectedForIndividual:a.id===o}))]}}onAddConnectionRow(e){this.model={...this.model,connections:[...this.model.connections,...S(3,()=>({name:"",relationship:"",id:u.makeId()}))]}}onAddSpecializationRow(e){this.model={...this.model,specializations:[...this.model.specializations,...S(3,()=>({name:"",id:u.makeId()}))]}}onAddSkillRow(e){let o=e.detail.id;this.model={...this.model,attributes:[...this.model.attributes.map(a=>a.id===o?{...a,skills:[...a.skills,{name:"",rank:0,xp:0,id:u.makeId()}]}:a)]}}onAddWoundLevel(e){this.model={...this.model,status:{...this.model.status,woundLevels:this.model.status.woundLevels.flatMap((o,a)=>a===0?[{level:"1",effects:"",shockCheck:"",checkable:!0,checked:!1,id:u.makeId()},{...o,level:`${a+2}`}]:[{...o,level:`${a+2}`}])}}}onRemoveWoundLevel(e){this.model={...this.model,status:{...this.model.status,woundLevels:this.model.status.woundLevels.flatMap((o,a)=>a===0?[]:[{...o,level:`${a}`}])}}}onAddFatigueLevel(e){let o=this.model.status.fatigueLevels.length+1;this.model={...this.model,status:{...this.model.status,fatigueLevels:Array.from(Array(o).keys()).map(a=>({level:`${a+1}`,effects:`-${a+1}d`,checked:this.model.status.fatigueLevels.length>a?this.model.status.fatigueLevels[a].checked:!1,id:u.makeId()}))}}}onRemoveFatigueLevel(e){let o=this.model.status.fatigueLevels.length-1;this.model={...this.model,status:{...this.model.status,fatigueLevels:Array.from(Array(o).keys()).map(a=>({level:`${a+1}`,effects:`-${a+1}d`,checked:this.model.status.fatigueLevels[a].checked,id:u.makeId()}))}}}onAddEquipmentRow(e){this.model={...this.model,inventory:{...this.model.inventory,equipment:[...this.model.inventory.equipment,{name:"",bonus:"",id:u.makeId()}]}}}onAddItemRow(e){this.model={...this.model,inventory:{...this.model.inventory,items:[...this.model.inventory.items,{name:"",quantity:0,id:u.makeId()}]}}}lint(e){return{...e,attributes:e.attributes.map(o=>({...o,skills:o.skills.map(a=>({...a,name:a.name??void 0,rank:a.name?a.rank:void 0,xp:a.name?a.xp:void 0}))})),specializations:e.specializations.map(o=>({...o,name:o.name??void 0,rank:o.name?o.rank:void 0,xp:o.name?o.xp:void 0}))}}onSaveToFile(e){let o=JSON.stringify(this.lint(this.model),void 0,2),a=document.createElement("a"),s=new Blob([o],{type:"application/json"});a.href=URL.createObjectURL(s),a.download=`${this._toFileName(this.model.name)}.json`,a.click(),URL.revokeObjectURL(a.href)}async onMobileShare(e){let o=JSON.stringify(this.lint(this.model),void 0,2),a=new Blob([o],{type:"application/json"}),s=new File([a],`${this._toFileName(this.model.name)}.json`);navigator.canShare({files:[s]})||alert("Sorry, sharing is not available.  Try saving instead.");try{await navigator.share({files:[s]})}catch(d){alert(`Sorry, sharing failed with the following error: ${d.message}.`)}}onLoadFromFile(e){let o=document.createElement("input");o.type="file",o.accept="application/json",o.addEventListener("change",async()=>{if(!o.files)return;let s=await o.files[0].text();this.model=this.lint(JSON.parse(s))},{once:!0}),o.click()}onPrint(e){this.onBeforePrint(null),requestAnimationFrame(()=>{window.print()})}onBeforePrint(e){if(!this._printDiv){this._printDiv=document.createElement("div");let o=this.shadowRoot.getRootNode();for(let a of o.querySelector("main").children){let s=a.cloneNode(!0);"model"in s&&(s.model=this.model),"columnCount"in s&&(s.columnCount=3),this._printDiv.appendChild(s),"flushUpdate"in s&&typeof s.flushUpdate=="function"&&s.flushUpdate()}document.body.appendChild(this._printDiv)}}onAfterPrint(e){this._printDiv?.remove(),this._printDiv=null}onToggleLocked(e){let o=e.target;this.locked=!o.on}_toFileName(e){return e.replace(/\W+/g,"_").toLowerCase()}};u.styles=[g,c`
       :host {
         position: relative;
         display: flex;
@@ -4543,34 +1668,56 @@
         box-shadow: inset 0 0 49px #e0dcbf, 0 6px 8px rgba(0, 0, 0, 0.25);
       }
 
+      #description-and-status {
+        display: grid;
+        grid-template-columns: 1fr min-content;
+        grid-template-rows: auto auto;
+        gap: 0px 0px;
+        grid-auto-flow: row;
+        grid-template-areas:
+          "description portrait"
+          "status portrait";
+      }
+
+      character-description-view {
+        grid-area: description;
+      }
+
+      status-view {
+        grid-area: status;
+      }
+
+      portrait-view {
+        grid-area: portrait;
+        width: 256px;
+        box-sizing: border-box;
+      }
+
+      @media screen and (max-width: 650px) {
+        #description-and-status {
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+          gap: 0px 0px;
+          grid-auto-flow: row;
+          grid-template-areas:
+            "description"
+            "status"
+            "portrait";
+        }
+
+        portrait-view {
+        width: auto;
+        height: 480px;
+      }
+      }
+
       @media print {
         :host {
           display: none;
         }
       }
-    `
-  ];
-  __decorateClass([
-    n4({ type: Object })
-  ], CharacterSheet.prototype, "model", 2);
-  __decorateClass([
-    n4({ type: Number })
-  ], CharacterSheet.prototype, "columnCount", 2);
-  __decorateClass([
-    n4({ type: Boolean })
-  ], CharacterSheet.prototype, "locked", 2);
-  CharacterSheet = __decorateClass([
-    t3("character-sheet")
-  ], CharacterSheet);
-
-  // src/main.ts
-  if (true) {
-    new EventSource("/esbuild").addEventListener(
-      "change",
-      () => location.reload()
-    );
-  }
-})();
+    `],l([f({type:Object})],u.prototype,"model",2),l([f({type:Number})],u.prototype,"columnCount",2),l([f({type:Boolean})],u.prototype,"locked",2),u=l([x("character-sheet")],u);})();
 /*! Bundled license information:
 
 @lit/reactive-element/css-tag.js:
@@ -4678,6 +1825,13 @@ lit-html/is-server.js:
    * SPDX-License-Identifier: BSD-3-Clause
    *)
 
+lit-html/directives/when.js:
+  (**
+   * @license
+   * Copyright 2021 Google LLC
+   * SPDX-License-Identifier: BSD-3-Clause
+   *)
+
 lucide/dist/esm/createElement.js:
   (**
    * @license lucide v0.454.0 - ISC
@@ -4695,6 +1849,14 @@ lucide/dist/esm/replaceElement.js:
    *)
 
 lucide/dist/esm/defaultAttributes.js:
+  (**
+   * @license lucide v0.454.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide/dist/esm/icons/book-image.js:
   (**
    * @license lucide v0.454.0 - ISC
    *
@@ -4782,10 +1944,17 @@ lucide/dist/esm/lucide.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
-lit-html/directives/when.js:
+lit-html/directive.js:
   (**
    * @license
-   * Copyright 2021 Google LLC
+   * Copyright 2017 Google LLC
+   * SPDX-License-Identifier: BSD-3-Clause
+   *)
+
+lit-html/directives/class-map.js:
+  (**
+   * @license
+   * Copyright 2018 Google LLC
    * SPDX-License-Identifier: BSD-3-Clause
    *)
 */
