@@ -1034,6 +1034,7 @@ lucide.createIcons({icons});\``);if(typeof document>"u")throw new Error("`create
         ${ee(this.model.portraitUrl,()=>i`<div
               id="image"
               style="background-image: url('${this.model.portraitUrl}')"
+              @click=${this.choosePortrait}
             ></div>`,()=>i`<div id="placeholder" @click=${this.choosePortrait}>
             <icon-button @click=${this.choosePortrait}>
               <lucide-icon size="32" .icon=${$e}></lucide-icon>
